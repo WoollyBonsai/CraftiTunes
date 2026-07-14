@@ -3,7 +3,7 @@ package com.woollybonsai.craftitunes.client;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.woollybonsai.craftitunes.CraftiTunes;
 import com.woollybonsai.craftitunes.audio.AudioEngine;
-import com.woollybonsai.craftitunes.client.audio.OpenALAudioOutput;
+import com.woollybonsai.craftitunes.client.audio.JavaAudioOutput;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
@@ -13,7 +13,7 @@ import net.minecraft.network.chat.Component;
 
 public class CraftiTunesClient implements ClientModInitializer {
 
-    private OpenALAudioOutput audioBridge;
+    private JavaAudioOutput audioBridge;
 
     @Override
     public void onInitializeClient() {
@@ -21,7 +21,7 @@ public class CraftiTunesClient implements ClientModInitializer {
         
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
             CraftiTunes.LOGGER.info("Minecraft fully booted. Registering Audio Bridge...");
-            audioBridge = new OpenALAudioOutput(AudioEngine.getPlayer());
+            audioBridge = new JavaAudioOutput(AudioEngine.getPlayer());
         });
 
         ClientTickEvents.START_CLIENT_TICK.register(client -> {
