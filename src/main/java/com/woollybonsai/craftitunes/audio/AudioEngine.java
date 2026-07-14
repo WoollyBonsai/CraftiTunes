@@ -8,6 +8,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
 import com.woollybonsai.craftitunes.CraftiTunes;
 
 public class AudioEngine {
@@ -19,6 +20,9 @@ public class AudioEngine {
         CraftiTunes.LOGGER.info("Initializing CraftiTunes Audio Engine...");
         
         playerManager = new DefaultAudioPlayerManager();
+        
+        // Force output to 48kHz 16-bit Stereo Big-Endian to match our JavaAudioOutput format perfectly
+        playerManager.getConfiguration().setOutputFormat(new AudioDataFormat(2, 48000, 960, AudioDataFormat.Codec.PCM_S16_BE));
         
         // Registers local file audio source and standard HTTP sources
         AudioSourceManagers.registerLocalSource(playerManager);

@@ -25,11 +25,14 @@ public class JavaAudioOutput {
         CraftiTunes.LOGGER.info("Initializing Java Sound PCM Bridge...");
         
         try {
-            // Lavaplayer outputs 48000Hz, 16-bit, Stereo, Big Endian PCM
+            // Lavaplayer usually defaults to 48000Hz, 16-bit, Stereo, Big Endian.
+            // If it sounds like crackling, it's usually either Endianness mismatch or buffer underrun.
+            // Let's set it to Big Endian first, but with a MASSIVE 1-second buffer (192,000 bytes)
+            // to survive Minecraft's 50ms tick rate.
             AudioFormat format = new AudioFormat(48000f, 16, 2, true, true);
             DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
             line = (SourceDataLine) AudioSystem.getLine(info);
-            line.open(format);
+            line.open(format, 192000);
             line.start();
             initialized = true;
         } catch (Exception e) {
