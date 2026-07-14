@@ -1,0 +1,46 @@
+<owo-ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/wisp-forest/owo/1.21/owo-ui.xsd">
+    <components>
+        <flow-layout direction="vertical">
+            <sizing>
+                <width>100%</width>
+                <height>100%</height>
+            </sizing>
+            <horizontal-alignment>center</horizontal-alignment>
+            <vertical-alignment>center</vertical-alignment>
+            
+            <!-- Sleek Premium App Container -->
+            <flow-layout direction="vertical">
+                <sizing>
+                    <width>70%</width>
+                    <height>75%</height>
+                </sizing>
+                
+                <!-- Dark sleek background -->
+                <surface>
+                    <flat>#E6111115</flat>
+                </surface>
+                
+                <padding>
+                    <all>15</all>
+                </padding>
+
+                <!-- Top bar -->
+                <flow-layout direction="horizontal">
+                    <sizing>
+                        <width>100%</width>
+                        <height>25</height>
+                    </sizing>
+                    <vertical-alignment>center</vertical-alignment>
+                    
+                    <label>
+                        <text>CraftiTunes</text>
+                        <color>#1DB954</color>
+                        <shadow>true</shadow>
+                    </label>
+                </flow-layout>
+                
+            </flow-layout>
+        </flow-layout>
+    </components>
+</owo-ui>
