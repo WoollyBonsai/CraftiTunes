@@ -20,9 +20,8 @@ public class CraftiTunesClient implements ClientModInitializer {
         CraftiTunes.LOGGER.info("Registering client events...");
         
         ClientLifecycleEvents.CLIENT_STARTED.register(client -> {
-            CraftiTunes.LOGGER.info("Minecraft fully booted. Initializing OpenAL audio bridge...");
+            CraftiTunes.LOGGER.info("Minecraft fully booted. Registering Audio Bridge...");
             audioBridge = new OpenALAudioOutput(AudioEngine.getPlayer());
-            audioBridge.init();
         });
 
         ClientTickEvents.START_CLIENT_TICK.register(client -> {

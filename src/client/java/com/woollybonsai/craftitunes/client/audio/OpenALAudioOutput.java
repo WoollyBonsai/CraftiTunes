@@ -56,7 +56,10 @@ public class OpenALAudioOutput {
     }
 
     public void tick() {
-        if (!initialized) return;
+        if (!initialized) {
+            init();
+            if (!initialized) return;
+        }
 
         try {
             int processed = AL10.alGetSourcei(sourceId, AL10.AL_BUFFERS_PROCESSED);
