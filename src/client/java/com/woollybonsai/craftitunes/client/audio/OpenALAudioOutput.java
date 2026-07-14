@@ -10,28 +10,26 @@ import org.lwjgl.system.MemoryUtil;
 import java.nio.ByteBuffer;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class OpenALAudioOutput extends Thread {
+public class OpenALAudioOutput {
 
     private final AudioPlayer player;
-    private final AtomicBoolean running = new AtomicBoolean(true);
+    private boolean initialized = false;
     
     // OpenAL IDs
     private int sourceId = -1;
-    private final int[] buffers = new int[4]; // 4 buffers for a smooth stream ring
+    private final int[] buffers = new int[10]; // 10 buffers for 200ms queue, plenty for 20 TPS ticking
     
     // 48000Hz, 16-bit, stereo
     private static final int SAMPLE_RATE = 48000;
     private static final int FORMAT = AL10.AL_FORMAT_STEREO16;
 
     public OpenALAudioOutput(AudioPlayer player) {
-        super("CraftiTunes-OpenAL-Bridge");
         this.player = player;
-        this.setDaemon(true);
     }
 
-    @Override
-    public void run() {
-        CraftiTunes.LOGGER.info("Starting OpenAL PCM Bridge Thread");
+    public void init() {
+        if (initialized) return;
+        CraftiTunes.LOGGER.info("Initializing OpenAL PCM Bridge on Render Thread...");
         
         try {
             // Generate Source
@@ -51,31 +49,32 @@ public class OpenALAudioOutput extends Thread {
             
             AL10.alSourceQueueBuffers(sourceId, buffers);
             AL10.alSourcePlay(sourceId);
+            initialized = true;
+        } catch (Exception e) {
+            CraftiTunes.LOGGER.error("OpenAL Bridge init failed", e);
+        }
+    }
 
-            // Stream loop
-            while (running.get()) {
-                int processed = AL10.alGetSourcei(sourceId, AL10.AL_BUFFERS_PROCESSED);
-                
-                while (processed > 0) {
-                    int unqueuedBuffer = AL10.alSourceUnqueueBuffers(sourceId);
-                    fillBuffer(unqueuedBuffer);
-                    AL10.alSourceQueueBuffers(sourceId, unqueuedBuffer);
-                    processed--;
-                }
-                
-                int state = AL10.alGetSourcei(sourceId, AL10.AL_SOURCE_STATE);
-                if (state != AL10.AL_PLAYING) {
-                    // It can stop if buffer underrun happens
-                    AL10.alSourcePlay(sourceId);
-                }
-                
-                // Sleep roughly the duration of a frame to save CPU
-                Thread.sleep(10);
+    public void tick() {
+        if (!initialized) return;
+
+        try {
+            int processed = AL10.alGetSourcei(sourceId, AL10.AL_BUFFERS_PROCESSED);
+            
+            while (processed > 0) {
+                int unqueuedBuffer = AL10.alSourceUnqueueBuffers(sourceId);
+                fillBuffer(unqueuedBuffer);
+                AL10.alSourceQueueBuffers(sourceId, unqueuedBuffer);
+                processed--;
+            }
+            
+            int state = AL10.alGetSourcei(sourceId, AL10.AL_SOURCE_STATE);
+            if (state != AL10.AL_PLAYING) {
+                // Buffer underrun recovery
+                AL10.alSourcePlay(sourceId);
             }
         } catch (Exception e) {
-            CraftiTunes.LOGGER.error("OpenAL Bridge crashed", e);
-        } finally {
-            cleanup();
+            CraftiTunes.LOGGER.error("OpenAL Bridge tick error", e);
         }
     }
 
@@ -102,11 +101,8 @@ public class OpenALAudioOutput extends Thread {
         }
     }
 
-    public void shutdown() {
-        running.set(false);
-    }
-
-    private void cleanup() {
+    public void cleanup() {
+        if (!initialized) return;
         if (sourceId != -1) {
             AL10.alSourceStop(sourceId);
             AL10.alDeleteSources(sourceId);
