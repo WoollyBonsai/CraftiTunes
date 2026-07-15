@@ -16,6 +16,7 @@ import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 
 import java.io.File;
+import java.nio.file.Paths;
 
 public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
 
@@ -58,13 +59,14 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                 if (files != null && files.length > 0) {
                     for (File file : files) {
                         ButtonComponent trackBtn = Components.button(
-                            Component.literal(file.getName()), 
+                            Component.literal(formatTrackName(file.getName())), 
                             button -> {
                                 AudioEngine.loadAndPlay(file.getAbsolutePath());
                             }
                         );
                         trackBtn.sizing(Sizing.fill(100), Sizing.fixed(20));
                         trackBtn.margins(Insets.bottom(2));
+                        trackBtn.renderer(ButtonComponent.Renderer.flat(0x00000000, 0x331DB954, 0x00000000));
                         trackList.child(trackBtn);
                     }
                 } else {
@@ -87,7 +89,17 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                 AudioPlayer player = AudioEngine.getPlayer();
                 AudioTrack playing = player.getPlayingTrack();
                 if (playing != null) {
-                    label.text(Component.literal("Now Playing: " + playing.getInfo().title));
+                    String title = playing.getInfo().title;
+                    if (title == null || title.equalsIgnoreCase("Unknown track") || title.equalsIgnoreCase("Unknown title")) {
+                        String uri = playing.getInfo().uri;
+                        if (uri != null) {
+                            title = formatTrackName(Paths.get(uri).getFileName().toString());
+                        } else {
+                            title = "Unknown Track";
+                        }
+                    }
+                    
+                    label.text(Component.literal("Now Playing: " + title));
                     if (playBtn != null) {
                         playBtn.setMessage(Component.literal(player.isPaused() ? "Play" : "Pause"));
                     }
@@ -99,5 +111,19 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                 }
             }
         }
+    }
+
+    private String formatTrackName(String filename) {
+        if (filename == null) return "";
+        String name = filename.replaceAll("\\.mp3$", "").replaceAll("\\.wav$", "");
+        name = name.replace("_", " ").replace("-", " ");
+        String[] words = name.split(" ");
+        StringBuilder sb = new StringBuilder();
+        for (String word : words) {
+            if (word.length() > 0) {
+                sb.append(Character.toUpperCase(word.charAt(0))).append(word.substring(1)).append(" ");
+            }
+        }
+        return sb.toString().trim();
     }
 }
