@@ -49,10 +49,6 @@
                                     <text>Playlists</text>
                                     <sizing><horizontal method="fill">100</horizontal></sizing>
                                 </button>
-                                <button id="btn-queue">
-                                    <text>Queue</text>
-                                    <sizing><horizontal method="fill">100</horizontal></sizing>
-                                </button>
                             </children>
                         </flow-layout>
                         
@@ -144,6 +140,11 @@
                                                     <text>&gt;&gt;</text>
                                                     <sizing><horizontal method="fixed">30</horizontal></sizing>
                                                     <margins><left>5</left></margins>
+                                                </button>
+                                                <button id="btn-queue">
+                                                    <text>Queue</text>
+                                                    <sizing><horizontal method="fixed">50</horizontal></sizing>
+                                                    <margins><left>20</left></margins>
                                                 </button>
                                             </children>
                                         </flow-layout>
