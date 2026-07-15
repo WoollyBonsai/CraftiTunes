@@ -3,8 +3,8 @@
     <components>
         <flow-layout direction="vertical">
             <sizing>
-                <horizontal>fill</horizontal>
-                <vertical>fill</vertical>
+                <horizontal method="fill">100</horizontal>
+                <vertical method="fill">100</vertical>
             </sizing>
             <horizontal-alignment>center</horizontal-alignment>
             <vertical-alignment>center</vertical-alignment>
@@ -13,8 +13,8 @@
                 <!-- Main Window -->
                 <flow-layout direction="horizontal">
                     <sizing>
-                        <horizontal>400</horizontal>
-                        <vertical>250</vertical>
+                        <horizontal method="fixed">400</horizontal>
+                        <vertical method="fixed">250</vertical>
                     </sizing>
                     <surface>
                         <panel dark="true"/>
@@ -24,8 +24,8 @@
                         <!-- Sidebar -->
                         <flow-layout direction="vertical">
                             <sizing>
-                                <horizontal>100</horizontal>
-                                <vertical>fill</vertical>
+                                <horizontal method="fixed">100</horizontal>
+                                <vertical method="fill">100</vertical>
                             </sizing>
                             <padding>
                                 <all>5</all>
@@ -40,10 +40,10 @@
                                     <margins><bottom>10</bottom></margins>
                                 </label>
                                 <button id="btn-local-files" text="Local Files">
-                                    <sizing><horizontal>fill</horizontal></sizing>
+                                    <sizing><horizontal method="fill">100</horizontal></sizing>
                                 </button>
                                 <button id="btn-playlists" text="Playlists">
-                                    <sizing><horizontal>fill</horizontal></sizing>
+                                    <sizing><horizontal method="fill">100</horizontal></sizing>
                                 </button>
                             </children>
                         </flow-layout>
@@ -51,8 +51,8 @@
                         <!-- Main Content Area -->
                         <flow-layout direction="vertical">
                             <sizing>
-                                <horizontal>fill</horizontal>
-                                <vertical>fill</vertical>
+                                <horizontal method="fill">100</horizontal>
+                                <vertical method="fill">100</vertical>
                             </sizing>
                             <padding>
                                 <all>10</all>
@@ -62,8 +62,8 @@
                                 <!-- Top: Now Playing Info -->
                                 <flow-layout direction="horizontal">
                                     <sizing>
-                                        <horizontal>fill</horizontal>
-                                        <vertical>30</vertical>
+                                        <horizontal method="fill">100</horizontal>
+                                        <vertical method="fixed">30</vertical>
                                     </sizing>
                                     <vertical-alignment>center</vertical-alignment>
                                     <children>
@@ -75,8 +75,8 @@
                                 <scroll direction="vertical">
                                     <flow-layout direction="vertical" id="track-list">
                                         <sizing>
-                                            <horizontal>fill</horizontal>
-                                            <vertical>content</vertical>
+                                            <horizontal method="fill">100</horizontal>
+                                            <vertical method="content"></vertical>
                                         </sizing>
                                         <children>
                                             <label text="Loading tracks..."/>
@@ -84,8 +84,8 @@
                                     </flow-layout>
                                     
                                     <sizing>
-                                        <horizontal>fill</horizontal>
-                                        <vertical>fill</vertical>
+                                        <horizontal method="fill">100</horizontal>
+                                        <vertical method="fill">100</vertical>
                                     </sizing>
                                     <margins>
                                         <top>5</top>
@@ -96,21 +96,21 @@
                                 <!-- Bottom: Playback Controls -->
                                 <flow-layout direction="horizontal">
                                     <sizing>
-                                        <horizontal>fill</horizontal>
-                                        <vertical>25</vertical>
+                                        <horizontal method="fill">100</horizontal>
+                                        <vertical method="fixed">25</vertical>
                                     </sizing>
                                     <horizontal-alignment>center</horizontal-alignment>
                                     <vertical-alignment>center</vertical-alignment>
                                     <children>
                                         <button id="btn-prev" text="&lt;&lt;">
-                                            <sizing><horizontal>30</horizontal></sizing>
+                                            <sizing><horizontal method="fixed">30</horizontal></sizing>
                                             <margins><right>5</right></margins>
                                         </button>
                                         <button id="btn-play-pause" text="Play">
-                                            <sizing><horizontal>50</horizontal></sizing>
+                                            <sizing><horizontal method="fixed">50</horizontal></sizing>
                                         </button>
                                         <button id="btn-next" text="&gt;&gt;">
-                                            <sizing><horizontal>30</horizontal></sizing>
+                                            <sizing><horizontal method="fixed">30</horizontal></sizing>
                                             <margins><left>5</left></margins>
                                         </button>
                                     </children>
