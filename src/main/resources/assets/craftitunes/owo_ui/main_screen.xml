@@ -9,34 +9,40 @@
             <horizontal-alignment>center</horizontal-alignment>
             <vertical-alignment>center</vertical-alignment>
             
-            <!-- Sleek Premium App Container -->
-            <flow-layout direction="vertical">
-                <sizing>
-                    <width>250</width>
-                    <height>150</height>
-                </sizing>
-                
-                <!-- Dark sleek background -->
-                <surface>
-                    <panel dark="true"/>
-                </surface>
-                
-                <padding>
-                    <all>15</all>
-                </padding>
-
-                <!-- Top bar -->
-                <flow-layout direction="horizontal">
+            <children>
+                <!-- Sleek Premium App Container -->
+                <flow-layout direction="vertical">
                     <sizing>
-                        <width>fill</width>
-                        <height>25</height>
+                        <width>250</width>
+                        <height>150</height>
                     </sizing>
-                    <vertical-alignment>center</vertical-alignment>
                     
-                    <label text="CraftiTunes GUI Working!" shadow="true"/>
+                    <!-- Dark sleek background -->
+                    <surface>
+                        <panel dark="true"/>
+                    </surface>
+                    
+                    <padding>
+                        <all>15</all>
+                    </padding>
+
+                    <children>
+                        <!-- Top bar -->
+                        <flow-layout direction="horizontal">
+                            <sizing>
+                                <width>fill</width>
+                                <height>25</height>
+                            </sizing>
+                            <vertical-alignment>center</vertical-alignment>
+                            
+                            <children>
+                                <label text="CraftiTunes GUI Working!" shadow="true"/>
+                            </children>
+                        </flow-layout>
+                    </children>
+                    
                 </flow-layout>
-                
-            </flow-layout>
+            </children>
         </flow-layout>
     </components>
 </owo-ui>
