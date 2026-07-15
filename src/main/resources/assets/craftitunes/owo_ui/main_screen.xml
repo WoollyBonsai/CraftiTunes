@@ -73,6 +73,16 @@
                                 
                                 <!-- Middle: Track List -->
                                 <scroll direction="vertical">
+                                    <flow-layout direction="vertical" id="track-list">
+                                        <sizing>
+                                            <width>fill</width>
+                                            <height>content</height>
+                                        </sizing>
+                                        <children>
+                                            <label text="Loading tracks..."/>
+                                        </children>
+                                    </flow-layout>
+                                    
                                     <sizing>
                                         <width>fill</width>
                                         <height>fill</height>
@@ -81,17 +91,6 @@
                                         <top>5</top>
                                         <bottom>5</bottom>
                                     </margins>
-                                    <children>
-                                        <flow-layout direction="vertical" id="track-list">
-                                            <sizing>
-                                                <width>fill</width>
-                                                <height>content</height>
-                                            </sizing>
-                                            <children>
-                                                <label text="Loading tracks..."/>
-                                            </children>
-                                        </flow-layout>
-                                    </children>
                                 </scroll>
                                 
                                 <!-- Bottom: Playback Controls -->
