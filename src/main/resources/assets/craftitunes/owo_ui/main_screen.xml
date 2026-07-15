@@ -18,7 +18,7 @@
                 
                 <!-- Dark sleek background -->
                 <surface>
-                    <flat>#E6111115</flat>
+                    <panel dark="true"/>
                 </surface>
                 
                 <padding>
@@ -33,10 +33,11 @@
                     </sizing>
                     <vertical-alignment>center</vertical-alignment>
                     
-                    <label>
-                        <text>CraftiTunes</text>
-                        <color>#1DB954</color>
-                        <shadow>true</shadow>
+                    <label text="CraftiTunes GUI is Working!" shadow="true">
+                        <sizing>
+                            <width>content</width>
+                            <height>content</height>
+                        </sizing>
                     </label>
                 </flow-layout>
                 
