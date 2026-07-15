@@ -91,21 +91,50 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
         }
 
         if (trackList != null) {
-            trackList.clearChildren();
-            
+            setupTabs(rootComponent, trackList);
+            loadTab(trackList, "Local Files");
+        }
+    }
+
+    private void setupTabs(FlowLayout rootComponent, FlowLayout trackList) {
+        String[] tabs = {"tab-local", "tab-spotify", "tab-yt-music", "tab-apple", "tab-prime"};
+        String[] names = {"Local Files", "Spotify", "YT Music", "Apple Music", "Prime Music"};
+        for (int i = 0; i < tabs.length; i++) {
+            final String tabTitle = names[i];
+            ButtonComponent tabBtn = rootComponent.childById(ButtonComponent.class, tabs[i]);
+            if (tabBtn != null) {
+                tabBtn.onPress(button -> {
+                    loadTab(trackList, tabTitle);
+                });
+            }
+        }
+    }
+
+    private void loadTab(FlowLayout trackList, String tabName) {
+        trackList.clearChildren();
+        if (tabName.equals("Local Files")) {
             File musicDir = new File("/home/woolly/Work/Minecraft_Mods/Craftitunes/test_music");
             if (musicDir.exists() && musicDir.isDirectory()) {
                 File[] files = musicDir.listFiles((d, name) -> name.endsWith(".mp3") || name.endsWith(".wav"));
                 if (files != null && files.length > 0) {
                     for (File file : files) {
                         ButtonComponent trackBtn = Components.button(
-                            Component.literal(formatTrackName(file.getName())), 
+                            Component.literal(formatTrackName(file.getName()) + " (R-Click to Queue)"), 
                             button -> {
                                 AudioEngine.getScheduler().clearQueue();
                                 AudioEngine.getPlayer().stopTrack();
                                 AudioEngine.loadAndPlay(file.getAbsolutePath());
                             }
                         );
+                        
+                        trackBtn.mouseDown().subscribe((mouseX, mouseY, button) -> {
+                            if (button == 1) { // Right click
+                                AudioEngine.loadAndPlay(file.getAbsolutePath());
+                                return true;
+                            }
+                            return false;
+                        });
+
                         trackBtn.sizing(Sizing.fill(100), Sizing.fixed(20));
                         trackBtn.margins(Insets.bottom(2));
                         trackBtn.renderer(ButtonComponent.Renderer.flat(0x00000000, 0x331DB954, 0x00000000));
@@ -117,6 +146,10 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
             } else {
                 trackList.child(Components.label(Component.literal("test_music folder not found.")));
             }
+        } else {
+            LabelComponent lbl = Components.label(Component.literal(tabName + " API Integration Coming Soon!"));
+            lbl.margins(Insets.top(20));
+            trackList.child(lbl);
         }
     }
 

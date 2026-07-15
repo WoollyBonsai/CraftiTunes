@@ -41,12 +41,24 @@
                                     <color>#1DB954</color>
                                     <margins><bottom>10</bottom></margins>
                                 </label>
-                                <button id="btn-local-files">
+                                <button id="tab-local">
                                     <text>Local Files</text>
                                     <sizing><horizontal method="fill">100</horizontal></sizing>
                                 </button>
-                                <button id="btn-playlists">
-                                    <text>Playlists</text>
+                                <button id="tab-spotify">
+                                    <text>Spotify</text>
+                                    <sizing><horizontal method="fill">100</horizontal></sizing>
+                                </button>
+                                <button id="tab-yt-music">
+                                    <text>YT Music</text>
+                                    <sizing><horizontal method="fill">100</horizontal></sizing>
+                                </button>
+                                <button id="tab-apple">
+                                    <text>Apple Music</text>
+                                    <sizing><horizontal method="fill">100</horizontal></sizing>
+                                </button>
+                                <button id="tab-prime">
+                                    <text>Prime Music</text>
                                     <sizing><horizontal method="fill">100</horizontal></sizing>
                                 </button>
                             </children>
