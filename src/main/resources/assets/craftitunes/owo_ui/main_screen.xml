@@ -49,6 +49,10 @@
                                     <text>Playlists</text>
                                     <sizing><horizontal method="fill">100</horizontal></sizing>
                                 </button>
+                                <button id="btn-queue">
+                                    <text>Queue</text>
+                                    <sizing><horizontal method="fill">100</horizontal></sizing>
+                                </button>
                             </children>
                         </flow-layout>
                         
@@ -103,28 +107,46 @@
                                 </scroll>
                                 
                                 <!-- Bottom: Playback Controls -->
-                                <flow-layout direction="horizontal">
+                                <flow-layout direction="vertical">
                                     <sizing>
                                         <horizontal method="fill">100</horizontal>
-                                        <vertical method="fixed">25</vertical>
+                                        <vertical method="fixed">45</vertical>
                                     </sizing>
                                     <horizontal-alignment>center</horizontal-alignment>
                                     <vertical-alignment>center</vertical-alignment>
+                                    
                                     <children>
-                                        <button id="btn-prev">
-                                            <text>&lt;&lt;</text>
-                                            <sizing><horizontal method="fixed">30</horizontal></sizing>
-                                            <margins><right>5</right></margins>
-                                        </button>
-                                        <button id="btn-play-pause">
-                                            <text>Play</text>
-                                            <sizing><horizontal method="fixed">50</horizontal></sizing>
-                                        </button>
-                                        <button id="btn-next">
-                                            <text>&gt;&gt;</text>
-                                            <sizing><horizontal method="fixed">30</horizontal></sizing>
-                                            <margins><left>5</left></margins>
-                                        </button>
+                                        <slider id="track-slider">
+                                            <sizing>
+                                                <horizontal method="fill">100</horizontal>
+                                            </sizing>
+                                            <margins><bottom>5</bottom></margins>
+                                        </slider>
+                                        
+                                        <flow-layout direction="horizontal">
+                                            <sizing>
+                                                <horizontal method="content"></horizontal>
+                                                <vertical method="content"></vertical>
+                                            </sizing>
+                                            <horizontal-alignment>center</horizontal-alignment>
+                                            <vertical-alignment>center</vertical-alignment>
+                                            <children>
+                                                <button id="btn-prev">
+                                                    <text>&lt;&lt;</text>
+                                                    <sizing><horizontal method="fixed">30</horizontal></sizing>
+                                                    <margins><right>5</right></margins>
+                                                </button>
+                                                <button id="btn-play-pause">
+                                                    <text>Play</text>
+                                                    <sizing><horizontal method="fixed">50</horizontal></sizing>
+                                                </button>
+                                                <button id="btn-next">
+                                                    <text>&gt;&gt;</text>
+                                                    <sizing><horizontal method="fixed">30</horizontal></sizing>
+                                                    <margins><left>5</left></margins>
+                                                </button>
+                                            </children>
+                                        </flow-layout>
                                     </children>
                                 </flow-layout>
                             </children>

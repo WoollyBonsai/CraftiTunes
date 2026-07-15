@@ -4,6 +4,7 @@ import io.wispforest.owo.ui.base.BaseUIModelScreen;
 import io.wispforest.owo.ui.component.ButtonComponent;
 import io.wispforest.owo.ui.component.LabelComponent;
 import io.wispforest.owo.ui.component.Components;
+import io.wispforest.owo.ui.component.SliderComponent;
 import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.core.Surface;
 import io.wispforest.owo.ui.core.Sizing;
@@ -49,7 +50,46 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
             });
         }
         
+        ButtonComponent prevBtn = rootComponent.childById(ButtonComponent.class, "btn-prev");
+        if (prevBtn != null) {
+            prevBtn.onPress(button -> {
+                AudioTrack track = AudioEngine.getPlayer().getPlayingTrack();
+                if (track != null) {
+                    track.setPosition(0);
+                }
+            });
+        }
+
+        SliderComponent slider = rootComponent.childById(SliderComponent.class, "track-slider");
+        if (slider != null) {
+            slider.onChanged().subscribe(value -> {
+                AudioTrack track = AudioEngine.getPlayer().getPlayingTrack();
+                if (track != null) {
+                    double expected = (double) track.getPosition() / track.getDuration();
+                    if (Math.abs(value - expected) > 0.02) {
+                        track.setPosition((long)(value * track.getDuration()));
+                    }
+                }
+            });
+        }
+        
         FlowLayout trackList = rootComponent.childById(FlowLayout.class, "track-list");
+        
+        ButtonComponent queueBtn = rootComponent.childById(ButtonComponent.class, "btn-queue");
+        if (queueBtn != null && trackList != null) {
+            queueBtn.onPress(button -> {
+                trackList.clearChildren();
+                for (AudioTrack t : AudioEngine.getScheduler().getQueue()) {
+                    LabelComponent lbl = Components.label(Component.literal(t.getInfo().title));
+                    lbl.margins(Insets.bottom(2));
+                    trackList.child(lbl);
+                }
+                if (AudioEngine.getScheduler().getQueue().isEmpty()) {
+                    trackList.child(Components.label(Component.literal("Queue is empty.")));
+                }
+            });
+        }
+
         if (trackList != null) {
             trackList.clearChildren();
             
@@ -61,6 +101,8 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                         ButtonComponent trackBtn = Components.button(
                             Component.literal(formatTrackName(file.getName())), 
                             button -> {
+                                AudioEngine.getScheduler().clearQueue();
+                                AudioEngine.getPlayer().stopTrack();
                                 AudioEngine.loadAndPlay(file.getAbsolutePath());
                             }
                         );
@@ -103,10 +145,22 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                     if (playBtn != null) {
                         playBtn.setMessage(Component.literal(player.isPaused() ? "Play" : "Pause"));
                     }
+                    
+                    SliderComponent slider = this.uiAdapter.rootComponent.childById(SliderComponent.class, "track-slider");
+                    if (slider != null && playing.getDuration() > 0) {
+                        double expected = (double) playing.getPosition() / playing.getDuration();
+                        if (Math.abs(slider.value() - expected) > 0.02) {
+                            slider.value(expected);
+                        }
+                    }
                 } else {
                     label.text(Component.literal("Now Playing: None"));
                     if (playBtn != null) {
                         playBtn.setMessage(Component.literal("Play"));
+                    }
+                    SliderComponent slider = this.uiAdapter.rootComponent.childById(SliderComponent.class, "track-slider");
+                    if (slider != null) {
+                        slider.value(0.0);
                     }
                 }
             }
