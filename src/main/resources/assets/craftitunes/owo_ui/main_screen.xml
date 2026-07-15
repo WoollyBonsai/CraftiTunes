@@ -8,39 +8,117 @@
             </sizing>
             <horizontal-alignment>center</horizontal-alignment>
             <vertical-alignment>center</vertical-alignment>
-            
+
             <children>
-                <!-- Sleek Premium App Container -->
-                <flow-layout direction="vertical">
+                <!-- Main Window -->
+                <flow-layout direction="horizontal">
                     <sizing>
-                        <width>250</width>
-                        <height>150</height>
+                        <width>400</width>
+                        <height>250</height>
                     </sizing>
-                    
-                    <!-- Dark sleek background -->
                     <surface>
                         <panel dark="true"/>
                     </surface>
                     
-                    <padding>
-                        <all>15</all>
-                    </padding>
-
                     <children>
-                        <!-- Top bar -->
-                        <flow-layout direction="horizontal">
+                        <!-- Sidebar -->
+                        <flow-layout direction="vertical">
                             <sizing>
-                                <width>fill</width>
-                                <height>25</height>
+                                <width>100</width>
+                                <height>fill</height>
                             </sizing>
-                            <vertical-alignment>center</vertical-alignment>
+                            <padding>
+                                <all>5</all>
+                            </padding>
+                            <surface>
+                                <options-background/>
+                            </surface>
                             
                             <children>
-                                <label text="CraftiTunes GUI Working!" shadow="true"/>
+                                <label text="CraftiTunes" shadow="true">
+                                    <color>#1DB954</color>
+                                    <margins><bottom>10</bottom></margins>
+                                </label>
+                                <button id="btn-local-files" text="Local Files">
+                                    <sizing><width>fill</width></sizing>
+                                </button>
+                                <button id="btn-playlists" text="Playlists">
+                                    <sizing><width>fill</width></sizing>
+                                </button>
+                            </children>
+                        </flow-layout>
+                        
+                        <!-- Main Content Area -->
+                        <flow-layout direction="vertical">
+                            <sizing>
+                                <width>fill</width>
+                                <height>fill</height>
+                            </sizing>
+                            <padding>
+                                <all>10</all>
+                            </padding>
+                            
+                            <children>
+                                <!-- Top: Now Playing Info -->
+                                <flow-layout direction="horizontal">
+                                    <sizing>
+                                        <width>fill</width>
+                                        <height>30</height>
+                                    </sizing>
+                                    <vertical-alignment>center</vertical-alignment>
+                                    <children>
+                                        <label id="lbl-now-playing" text="Now Playing: None" shadow="true"/>
+                                    </children>
+                                </flow-layout>
+                                
+                                <!-- Middle: Track List -->
+                                <scroll direction="vertical">
+                                    <sizing>
+                                        <width>fill</width>
+                                        <height>fill</height>
+                                    </sizing>
+                                    <margins>
+                                        <top>5</top>
+                                        <bottom>5</bottom>
+                                    </margins>
+                                    <children>
+                                        <flow-layout direction="vertical" id="track-list">
+                                            <sizing>
+                                                <width>fill</width>
+                                                <height>content</height>
+                                            </sizing>
+                                            <children>
+                                                <label text="Loading tracks..."/>
+                                            </children>
+                                        </flow-layout>
+                                    </children>
+                                </scroll>
+                                
+                                <!-- Bottom: Playback Controls -->
+                                <flow-layout direction="horizontal">
+                                    <sizing>
+                                        <width>fill</width>
+                                        <height>25</height>
+                                    </sizing>
+                                    <horizontal-alignment>center</horizontal-alignment>
+                                    <vertical-alignment>center</vertical-alignment>
+                                    <children>
+                                        <button id="btn-prev" text="&lt;&lt;">
+                                            <sizing><width>30</width></sizing>
+                                            <margins><right>5</right></margins>
+                                        </button>
+                                        <button id="btn-play-pause" text="Play">
+                                            <sizing><width>50</width></sizing>
+                                        </button>
+                                        <button id="btn-next" text="&gt;&gt;">
+                                            <sizing><width>30</width></sizing>
+                                            <margins><left>5</left></margins>
+                                        </button>
+                                    </children>
+                                </flow-layout>
                             </children>
                         </flow-layout>
                     </children>
-                    
                 </flow-layout>
             </children>
         </flow-layout>
