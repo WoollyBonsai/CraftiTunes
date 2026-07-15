@@ -3,8 +3,8 @@
     <components>
         <flow-layout direction="vertical">
             <sizing>
-                <width>100%</width>
-                <height>100%</height>
+                <width>fill</width>
+                <height>fill</height>
             </sizing>
             <horizontal-alignment>center</horizontal-alignment>
             <vertical-alignment>center</vertical-alignment>
@@ -12,8 +12,8 @@
             <!-- Sleek Premium App Container -->
             <flow-layout direction="vertical">
                 <sizing>
-                    <width>70%</width>
-                    <height>75%</height>
+                    <width>250</width>
+                    <height>150</height>
                 </sizing>
                 
                 <!-- Dark sleek background -->
@@ -28,17 +28,12 @@
                 <!-- Top bar -->
                 <flow-layout direction="horizontal">
                     <sizing>
-                        <width>100%</width>
+                        <width>fill</width>
                         <height>25</height>
                     </sizing>
                     <vertical-alignment>center</vertical-alignment>
                     
-                    <label text="CraftiTunes GUI is Working!" shadow="true">
-                        <sizing>
-                            <width>content</width>
-                            <height>content</height>
-                        </sizing>
-                    </label>
+                    <label text="CraftiTunes GUI Working!" shadow="true"/>
                 </flow-layout>
                 
             </flow-layout>
