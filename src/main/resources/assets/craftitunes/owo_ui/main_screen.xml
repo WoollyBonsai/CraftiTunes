@@ -120,12 +120,6 @@
                                     <children>
                                         <!-- Left Side: Folders & Playlists Grid (Placeholder styling) -->
                                         <scroll direction="vertical">
-                                            <sizing>
-                                                <horizontal method="fixed">180</horizontal>
-                                                <vertical method="fill">100</vertical>
-                                            </sizing>
-                                            <margins><right>10</right></margins>
-                                            
                                             <flow-layout direction="vertical">
                                                 <sizing><horizontal method="fill">100</horizontal><vertical method="content"></vertical></sizing>
                                                 <children>
@@ -151,6 +145,12 @@
                                                     </flow-layout>
                                                 </children>
                                             </flow-layout>
+                                            
+                                            <sizing>
+                                                <horizontal method="fixed">180</horizontal>
+                                                <vertical method="fill">100</vertical>
+                                            </sizing>
+                                            <margins><right>10</right></margins>
                                         </scroll>
                                         
                                         <!-- Right Side: Track List -->
@@ -175,10 +175,6 @@
                                                 
                                                 <!-- Track List Scroll Area -->
                                                 <scroll direction="vertical">
-                                                    <sizing>
-                                                        <horizontal method="fill">100</horizontal>
-                                                        <vertical method="fill">100</vertical>
-                                                    </sizing>
                                                     <flow-layout direction="vertical" id="track-list">
                                                         <sizing>
                                                             <horizontal method="fill">100</horizontal>
@@ -190,6 +186,10 @@
                                                             </label>
                                                         </children>
                                                     </flow-layout>
+                                                    <sizing>
+                                                        <horizontal method="fill">100</horizontal>
+                                                        <vertical method="fill">100</vertical>
+                                                    </sizing>
                                                 </scroll>
                                             </children>
                                         </flow-layout>
