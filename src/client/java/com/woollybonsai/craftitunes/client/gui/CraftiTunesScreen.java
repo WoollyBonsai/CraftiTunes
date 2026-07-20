@@ -263,13 +263,12 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
             contentContainer.child(Components.button(Component.literal("Aesthetics: Default Theme"), b -> {}).sizing(Sizing.fill(100)).margins(Insets.bottom(10)));
             contentContainer.child(Components.button(Component.literal("Notifications: ON"), b -> {}).sizing(Sizing.fill(100)).margins(Insets.bottom(10)));
             contentContainer.child(Components.button(Component.literal("Hotkeys: Configure..."), b -> {}).sizing(Sizing.fill(100)).margins(Insets.bottom(10)));
-        } else {
-            // Streaming Services (Spotify, YT, etc)
+        } else if (tabName.equals("Spotify")) {
             LabelComponent header = Components.label(Component.literal(tabName.toUpperCase()));
             header.color(io.wispforest.owo.ui.core.Color.ofArgb(0xFF000000 | themeColor)).shadow(true).margins(Insets.bottom(10));
             contentContainer.child(header);
-            
-            if (tabName.equals("Spotify")) {
+
+            if (com.woollybonsai.craftitunes.auth.SpotifyAuthManager.accessToken == null) {
                 ButtonComponent loginBtn = Components.button(Component.literal("Login to Spotify (Web)"), b -> {
                     com.woollybonsai.craftitunes.auth.SpotifyAuthManager.startAuthFlow();
                 });
@@ -277,7 +276,36 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                 contentContainer.child(loginBtn);
                 
                 contentContainer.child(Components.label(Component.literal("Once you click login, your browser will open. Agree to link your account, and the token will be fetched automatically!")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)).margins(Insets.bottom(10)));
+            } else {
+                contentContainer.child(Components.label(Component.literal("Loading Playlists...")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)).id("spotify-loading"));
+                
+                com.woollybonsai.craftitunes.api.SpotifyApiClient.getUserPlaylists().thenAccept(playlists -> {
+                    net.minecraft.client.Minecraft.getInstance().execute(() -> {
+                        var loading = contentContainer.childById(io.wispforest.owo.ui.core.Component.class, "spotify-loading");
+                        if (loading != null) contentContainer.removeChild(loading);
+                        
+                        if (playlists.isEmpty()) {
+                            contentContainer.child(Components.label(Component.literal("No playlists found or failed to load.")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)));
+                            return;
+                        }
+                        
+                        FlowLayout grid = Containers.horizontalFlow(Sizing.fill(100), Sizing.content());
+                        for (var playlist : playlists) {
+                            ButtonComponent pBtn = Components.button(Component.literal(playlist.name()), b -> {
+                                loadSpotifyPlaylist(root, contentContainer, playlist.id(), playlist.name());
+                            });
+                            pBtn.sizing(Sizing.fill(48), Sizing.fixed(30)).margins(Insets.of(0, 5, 5, 0));
+                            grid.child(pBtn);
+                        }
+                        contentContainer.child(grid);
+                    });
+                });
             }
+        } else {
+            // Streaming Services (YT, Apple, etc) Mockups
+            LabelComponent header = Components.label(Component.literal(tabName.toUpperCase()));
+            header.color(io.wispforest.owo.ui.core.Color.ofArgb(0xFF000000 | themeColor)).shadow(true).margins(Insets.bottom(10));
+            contentContainer.child(header);
             
             contentContainer.child(Components.label(Component.literal("GOOD EVENING, Steve")).shadow(true).margins(Insets.bottom(10)));
             
@@ -294,6 +322,69 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
             recGrid.child(Components.button(Component.literal("New Releases"), b -> {}).sizing(Sizing.fill(48), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
             contentContainer.child(recGrid);
         }
+    }
+
+    private void loadSpotifyPlaylist(FlowLayout root, FlowLayout contentContainer, String playlistId, String playlistName) {
+        contentContainer.clearChildren();
+        
+        ButtonComponent backBtn = Components.button(Component.literal("< Back to Playlists"), b -> {
+            loadTab(root, contentContainer, "Spotify");
+        });
+        backBtn.sizing(Sizing.fixed(150), Sizing.fixed(20)).margins(Insets.bottom(10));
+        contentContainer.child(backBtn);
+        
+        LabelComponent header = Components.label(Component.literal(playlistName));
+        header.color(io.wispforest.owo.ui.core.Color.ofArgb(0xFF1DB954)).shadow(true).margins(Insets.bottom(10));
+        contentContainer.child(header);
+        
+        contentContainer.child(Components.label(Component.literal("Loading Tracks...")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)).id("spotify-loading-tracks"));
+        
+        com.woollybonsai.craftitunes.api.SpotifyApiClient.getPlaylistTracks(playlistId).thenAccept(tracks -> {
+            net.minecraft.client.Minecraft.getInstance().execute(() -> {
+                var loading = contentContainer.childById(io.wispforest.owo.ui.core.Component.class, "spotify-loading-tracks");
+                if (loading != null) contentContainer.removeChild(loading);
+                
+                if (tracks.isEmpty()) {
+                    contentContainer.child(Components.label(Component.literal("No tracks found.")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)));
+                    return;
+                }
+                
+                for (var trackItem : tracks) {
+                    var track = trackItem.track();
+                    if (track == null) continue;
+                    
+                    FlowLayout row = Containers.horizontalFlow(Sizing.fill(100), Sizing.fixed(30));
+                    row.verticalAlignment(io.wispforest.owo.ui.core.VerticalAlignment.CENTER);
+                    row.padding(Insets.of(5));
+                    row.surface(Surface.flat(0xFF333333));
+                    row.margins(Insets.bottom(2));
+                    
+                    row.mouseEnter().subscribe(() -> row.surface(Surface.flat(0xFF444444)));
+                    row.mouseLeave().subscribe(() -> row.surface(Surface.flat(0xFF333333)));
+                    
+                    row.mouseDown().subscribe((mouseX, mouseY, button) -> {
+                        if (button == 0) {
+                            if (net.minecraft.client.Minecraft.getInstance().player != null) {
+                                net.minecraft.client.Minecraft.getInstance().player.displayClientMessage(Component.literal("§eSpotify playback (via YT) coming soon! §7Selected: " + track.name()), false);
+                            }
+                            return true;
+                        }
+                        return false;
+                    });
+                    
+                    LabelComponent titleLbl = Components.label(Component.literal(track.name()));
+                    titleLbl.sizing(Sizing.fill(40), Sizing.content()).margins(Insets.left(5));
+                    row.child(titleLbl);
+                    
+                    LabelComponent artistLbl = Components.label(Component.literal(track.getArtistNames()));
+                    artistLbl.color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA));
+                    artistLbl.sizing(Sizing.fill(40), Sizing.content());
+                    row.child(artistLbl);
+                    
+                    contentContainer.child(row);
+                }
+            });
+        });
     }
 
     @Override
