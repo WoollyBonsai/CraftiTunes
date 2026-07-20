@@ -268,6 +268,16 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
             header.color(io.wispforest.owo.ui.core.Color.ofArgb(0xFF000000 | themeColor)).shadow(true).margins(Insets.bottom(10));
             contentContainer.child(header);
             
+            if (tabName.equals("Spotify")) {
+                ButtonComponent loginBtn = Components.button(Component.literal("Login to Spotify (Web)"), b -> {
+                    com.woollybonsai.craftitunes.auth.SpotifyAuthManager.startAuthFlow();
+                });
+                loginBtn.sizing(Sizing.fixed(150), Sizing.fixed(20)).margins(Insets.bottom(15));
+                contentContainer.child(loginBtn);
+                
+                contentContainer.child(Components.label(Component.literal("Once you click login, your browser will open. Agree to link your account, and the token will be fetched automatically!")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)).margins(Insets.bottom(10)));
+            }
+            
             contentContainer.child(Components.label(Component.literal("GOOD EVENING, Steve")).shadow(true).margins(Insets.bottom(10)));
             
             contentContainer.child(Components.label(Component.literal("Quick Access")).margins(Insets.bottom(5)));
@@ -282,10 +292,6 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
             recGrid.child(Components.button(Component.literal("Discover Weekly"), b -> {}).sizing(Sizing.fixed(120), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
             recGrid.child(Components.button(Component.literal("New Releases"), b -> {}).sizing(Sizing.fixed(120), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
             contentContainer.child(recGrid);
-
-            LabelComponent lbl = Components.label(Component.literal(tabName + " API Integration Coming Soon!"));
-            lbl.margins(Insets.top(20));
-            contentContainer.child(lbl);
         }
     }
 
