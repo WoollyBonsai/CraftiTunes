@@ -22,7 +22,7 @@ public class SpotifyAuthManager {
 
     private static final String CLIENT_ID = "04b1101c81cc4d00958fc1485eb50f4a"; // Public ID for PKCE
     private static final String REDIRECT_URI = "http://127.0.0.1:8888/callback";
-    private static final String SCOPES = "user-read-private user-read-email user-library-read user-modify-playback-state user-read-playback-state streaming";
+    private static final String SCOPES = "user-read-private user-read-email user-library-read user-modify-playback-state user-read-playback-state streaming playlist-read-private playlist-read-collaborative";
 
     private static String codeVerifier;
     private static HttpServer server;

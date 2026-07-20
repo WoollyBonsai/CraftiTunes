@@ -227,7 +227,7 @@
                         </children>
                     </flow-layout>
                     <sizing>
-                        <horizontal method="fill">100</horizontal>
+                        <horizontal method="content"></horizontal>
                         <vertical method="fill">100</vertical>
                     </sizing>
                 </scroll>
