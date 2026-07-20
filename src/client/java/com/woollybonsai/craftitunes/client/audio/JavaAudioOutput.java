@@ -3,6 +3,7 @@ package com.woollybonsai.craftitunes.client.audio;
 import com.sedmelluq.discord.lavaplayer.format.AudioDataFormat;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.playback.AudioFrame;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.woollybonsai.craftitunes.CraftiTunes;
 
 import javax.sound.sampled.AudioFormat;
@@ -15,6 +16,7 @@ public class JavaAudioOutput {
     private final AudioPlayer player;
     private SourceDataLine line;
     private boolean initialized = false;
+    private AudioTrack lastTrack = null;
 
     public JavaAudioOutput(AudioPlayer player) {
         this.player = player;
@@ -44,6 +46,23 @@ public class JavaAudioOutput {
         if (!initialized) {
             init();
             if (!initialized) return;
+        }
+
+        AudioTrack currentTrack = player.getPlayingTrack();
+        if (currentTrack != lastTrack) {
+            line.flush();
+            lastTrack = currentTrack;
+        }
+
+        if (player.isPaused() || currentTrack == null) {
+            if (line.isActive()) {
+                line.stop();
+            }
+            return;
+        } else {
+            if (!line.isActive() && line.isOpen()) {
+                line.start();
+            }
         }
 
         try {

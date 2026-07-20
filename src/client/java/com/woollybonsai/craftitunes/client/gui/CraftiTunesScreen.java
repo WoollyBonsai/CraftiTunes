@@ -21,6 +21,8 @@ import java.nio.file.Paths;
 
 public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
 
+    private long lastSliderUpdate = 0;
+
     public CraftiTunesScreen() {
         super(FlowLayout.class, DataSource.asset(ResourceLocation.fromNamespaceAndPath("craftitunes", "main_screen")));
     }
@@ -68,6 +70,7 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                     double expected = (double) track.getPosition() / track.getDuration();
                     if (Math.abs(value - expected) > 0.02) {
                         track.setPosition((long)(value * track.getDuration()));
+                        lastSliderUpdate = System.currentTimeMillis();
                     }
                 }
             });
@@ -181,9 +184,11 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                     
                     SliderComponent slider = this.uiAdapter.rootComponent.childById(SliderComponent.class, "track-slider");
                     if (slider != null && playing.getDuration() > 0) {
-                        double expected = (double) playing.getPosition() / playing.getDuration();
-                        if (Math.abs(slider.value() - expected) > 0.02) {
-                            slider.value(expected);
+                        if (System.currentTimeMillis() - lastSliderUpdate > 500) {
+                            double expected = (double) playing.getPosition() / playing.getDuration();
+                            if (Math.abs(slider.value() - expected) > 0.005) {
+                                slider.value(expected);
+                            }
                         }
                     }
                 } else {

@@ -13,7 +13,7 @@
                 <!-- Main Window -->
                 <flow-layout direction="horizontal">
                     <sizing>
-                        <horizontal method="fixed">400</horizontal>
+                        <horizontal method="fixed">450</horizontal>
                         <vertical method="fixed">250</vertical>
                     </sizing>
                     <surface>
@@ -75,20 +75,12 @@
                             </padding>
                             
                             <children>
-                                <!-- Top: Now Playing Info -->
-                                <flow-layout direction="horizontal">
-                                    <sizing>
-                                        <horizontal method="fill">100</horizontal>
-                                        <vertical method="fixed">30</vertical>
-                                    </sizing>
-                                    <vertical-alignment>center</vertical-alignment>
-                                    <children>
-                                        <label id="lbl-now-playing">
-                                            <text>Now Playing: None</text>
-                                            <shadow>true</shadow>
-                                        </label>
-                                    </children>
-                                </flow-layout>
+                                <!-- Top: Header -->
+                                <label id="header-label">
+                                    <text>LOCAL FILES</text>
+                                    <shadow>true</shadow>
+                                    <margins><bottom>10</bottom></margins>
+                                </label>
                                 
                                 <!-- Middle: Track List -->
                                 <scroll direction="vertical">
@@ -115,48 +107,55 @@
                                 </scroll>
                                 
                                 <!-- Bottom: Playback Controls -->
-                                <flow-layout direction="vertical">
+                                <flow-layout direction="horizontal">
                                     <sizing>
                                         <horizontal method="fill">100</horizontal>
-                                        <vertical method="fixed">45</vertical>
+                                        <vertical method="fixed">40</vertical>
                                     </sizing>
-                                    <horizontal-alignment>center</horizontal-alignment>
                                     <vertical-alignment>center</vertical-alignment>
+                                    <padding><all>5</all></padding>
                                     
                                     <children>
+                                        <!-- Left: Track Name -->
+                                        <label id="now-playing-label">
+                                            <text>Now Playing: None</text>
+                                            <sizing><horizontal method="fixed">150</horizontal></sizing>
+                                            <margins><right>10</right></margins>
+                                        </label>
+                                        
+                                        <!-- Center: Slider -->
                                         <slider id="track-slider">
                                             <sizing>
                                                 <horizontal method="fill">100</horizontal>
                                             </sizing>
-                                            <margins><bottom>5</bottom></margins>
+                                            <margins><left>10</left><right>20</right></margins>
                                         </slider>
                                         
+                                        <!-- Right: Buttons -->
                                         <flow-layout direction="horizontal">
                                             <sizing>
                                                 <horizontal method="content"></horizontal>
                                                 <vertical method="content"></vertical>
                                             </sizing>
-                                            <horizontal-alignment>center</horizontal-alignment>
                                             <vertical-alignment>center</vertical-alignment>
                                             <children>
-                                                <button id="btn-prev">
-                                                    <text>&lt;&lt;</text>
-                                                    <sizing><horizontal method="fixed">30</horizontal></sizing>
+                                                <button id="btn-queue">
+                                                    <text>Q</text>
+                                                    <sizing><horizontal method="fixed">20</horizontal><vertical method="fixed">20</vertical></sizing>
                                                     <margins><right>5</right></margins>
                                                 </button>
+                                                <button id="btn-prev">
+                                                    <text>&lt;&lt;</text>
+                                                    <sizing><horizontal method="fixed">30</horizontal><vertical method="fixed">20</vertical></sizing>
+                                                </button>
                                                 <button id="btn-play-pause">
-                                                    <text>Play</text>
-                                                    <sizing><horizontal method="fixed">50</horizontal></sizing>
+                                                    <text>||</text>
+                                                    <sizing><horizontal method="fixed">30</horizontal><vertical method="fixed">20</vertical></sizing>
+                                                    <margins><left>5</left><right>5</right></margins>
                                                 </button>
                                                 <button id="btn-next">
                                                     <text>&gt;&gt;</text>
-                                                    <sizing><horizontal method="fixed">30</horizontal></sizing>
-                                                    <margins><left>5</left></margins>
-                                                </button>
-                                                <button id="btn-queue">
-                                                    <text>Queue</text>
-                                                    <sizing><horizontal method="fixed">50</horizontal></sizing>
-                                                    <margins><left>20</left></margins>
+                                                    <sizing><horizontal method="fixed">30</horizontal><vertical method="fixed">20</vertical></sizing>
                                                 </button>
                                             </children>
                                         </flow-layout>
