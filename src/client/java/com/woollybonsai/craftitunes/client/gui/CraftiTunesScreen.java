@@ -212,35 +212,35 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                             }
                             return false;
                         });
-                        
-                        FlowLayout titleArea = Containers.verticalFlow(Sizing.fill(45), Sizing.content());
-                        titleArea.child(Components.label(Component.literal(formatTrackName(file.getName()))).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFFFFFFF)));
+                                           FlowLayout titleArea = Containers.horizontalFlow(Sizing.fill(40), Sizing.content());
+                        titleArea.child(Components.texture(net.minecraft.resources.ResourceLocation.parse("craftitunes:textures/gui/music_icon.png"), 0, 0, 16, 16, 16, 16).sizing(Sizing.fixed(16)));
+                        titleArea.child(Components.label(Component.literal(formatTrackName(file.getName()))).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFFFFFFF)).margins(Insets.left(5)));
                         row.child(titleArea);
                         
-                        LabelComponent artistLbl = Components.label(Component.literal("Unknown Artist")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA));
+                        LabelComponent artistLbl = Components.label(Component.literal("Unknown Artist"));
                         artistLbl.sizing(Sizing.fill(20), Sizing.content());
                         row.child(artistLbl);
                         
-                        LabelComponent durLbl = Components.label(Component.literal("3:00")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA));
+                        LabelComponent durLbl = Components.label(Component.literal("3:00"));
                         durLbl.sizing(Sizing.fill(15), Sizing.content());
                         row.child(durLbl);
                         
-                        ButtonComponent rowPlayBtn = Components.button(Component.literal(">"), btn -> {
-                            AudioEngine.getScheduler().clearQueue();
-                            AudioEngine.getPlayer().stopTrack();
-                            AudioEngine.loadAndPlay(file.getAbsolutePath());
+                        FlowLayout actionArea = Containers.horizontalFlow(Sizing.fill(20), Sizing.content());
+                        actionArea.horizontalAlignment(io.wispforest.owo.ui.core.HorizontalAlignment.RIGHT);
+                        ButtonComponent playBtn = Components.button(Component.literal(">"), b -> {
+                            com.woollybonsai.craftitunes.audio.AudioEngine.getScheduler().clearQueue();
+                            com.woollybonsai.craftitunes.audio.AudioEngine.getPlayer().stopTrack();
+                            com.woollybonsai.craftitunes.audio.AudioEngine.loadAndPlay(file.getAbsolutePath());
                         });
-                        rowPlayBtn.sizing(Sizing.fixed(20), Sizing.fixed(20));
-                        rowPlayBtn.margins(Insets.right(2));
+                        playBtn.sizing(Sizing.fixed(20), Sizing.fixed(20)).margins(Insets.right(5));
                         
-                        ButtonComponent rowQueueBtn = Components.button(Component.literal("+"), btn -> {
-                            AudioEngine.loadAndPlay(file.getAbsolutePath());
+                        ButtonComponent qBtn = Components.button(Component.literal("+"), b -> {
+                            com.woollybonsai.craftitunes.audio.AudioEngine.loadAndPlay(file.getAbsolutePath());
                         });
-                        rowQueueBtn.sizing(Sizing.fixed(20), Sizing.fixed(20));
-                        rowQueueBtn.margins(Insets.right(2));
-                        
-                        row.child(rowPlayBtn);
-                        row.child(rowQueueBtn);
+                        qBtn.sizing(Sizing.fixed(20), Sizing.fixed(20));
+                        actionArea.child(playBtn);
+                        actionArea.child(qBtn);
+                        row.child(actionArea);
                         
                         trackList.child(row);
                     }
@@ -282,15 +282,15 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
             
             contentContainer.child(Components.label(Component.literal("Quick Access")).margins(Insets.bottom(5)));
             FlowLayout quickGrid = Containers.horizontalFlow(Sizing.fill(100), Sizing.content());
-            quickGrid.child(Components.button(Component.literal("Liked Songs"), b -> {}).sizing(Sizing.fixed(120), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
-            quickGrid.child(Components.button(Component.literal("Daily Mix 1"), b -> {}).sizing(Sizing.fixed(120), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
-            quickGrid.child(Components.button(Component.literal("LoFi Beats"), b -> {}).sizing(Sizing.fixed(120), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
+            quickGrid.child(Components.button(Component.literal("Liked Songs"), b -> {}).sizing(Sizing.fill(32), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
+            quickGrid.child(Components.button(Component.literal("Daily Mix 1"), b -> {}).sizing(Sizing.fill(32), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
+            quickGrid.child(Components.button(Component.literal("LoFi Beats"), b -> {}).sizing(Sizing.fill(32), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
             contentContainer.child(quickGrid);
             
             contentContainer.child(Components.label(Component.literal("Recommendations")).margins(Insets.top(15).bottom(5)));
             FlowLayout recGrid = Containers.horizontalFlow(Sizing.fill(100), Sizing.content());
-            recGrid.child(Components.button(Component.literal("Discover Weekly"), b -> {}).sizing(Sizing.fixed(120), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
-            recGrid.child(Components.button(Component.literal("New Releases"), b -> {}).sizing(Sizing.fixed(120), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
+            recGrid.child(Components.button(Component.literal("Discover Weekly"), b -> {}).sizing(Sizing.fill(48), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
+            recGrid.child(Components.button(Component.literal("New Releases"), b -> {}).sizing(Sizing.fill(48), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
             contentContainer.child(recGrid);
         }
     }

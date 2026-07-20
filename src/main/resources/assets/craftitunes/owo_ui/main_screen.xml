@@ -165,14 +165,14 @@
                                         <!-- Left: Track Name -->
                                         <label id="now-playing-label">
                                             <text>Now Playing: None</text>
-                                            <sizing><horizontal method="fixed">150</horizontal></sizing>
+                                            <sizing><horizontal method="fill">20</horizontal></sizing>
                                             <margins><right>10</right></margins>
                                         </label>
                                         
                                         <!-- Center: Slider -->
                                         <slider id="track-slider">
                                             <sizing>
-                                                <horizontal method="fill">100</horizontal>
+                                                <horizontal method="fill">50</horizontal>
                                             </sizing>
                                             <margins><left>10</left><right>20</right></margins>
                                         </slider>
@@ -180,7 +180,7 @@
                                         <!-- Right: Buttons -->
                                         <flow-layout direction="horizontal">
                                             <sizing>
-                                                <horizontal method="content"></horizontal>
+                                                <horizontal method="fill">30</horizontal>
                                                 <vertical method="content"></vertical>
                                             </sizing>
                                             <vertical-alignment>center</vertical-alignment>
