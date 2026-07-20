@@ -32,6 +32,14 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
     protected void build(FlowLayout rootComponent) {
         rootComponent.surface(Surface.VANILLA_TRANSLUCENT);
         
+        FlowLayout mainWindow = rootComponent.childById(FlowLayout.class, "main-window-wrapper");
+        if (mainWindow != null) {
+            int screenWidth = net.minecraft.client.Minecraft.getInstance().getWindow().getGuiScaledWidth();
+            if (screenWidth > 550) {
+                mainWindow.margins(Insets.left((screenWidth - 550) / 2));
+            }
+        }
+        
         ButtonComponent playBtn = rootComponent.childById(ButtonComponent.class, "btn-play-pause");
         if (playBtn != null) {
             playBtn.onPress(button -> {

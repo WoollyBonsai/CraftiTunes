@@ -13,7 +13,7 @@
                 <scroll direction="horizontal">
 
 
-                    <flow-layout direction="vertical">
+                    <flow-layout direction="vertical" id="main-window-wrapper">
                         <sizing>
                             <horizontal method="content"></horizontal>
                             <vertical method="fill">100</vertical>
@@ -227,7 +227,7 @@
                         </children>
                     </flow-layout>
                     <sizing>
-                        <horizontal method="content"></horizontal>
+                        <horizontal method="fill">100</horizontal>
                         <vertical method="fill">100</vertical>
                     </sizing>
                 </scroll>
