@@ -17,7 +17,7 @@
                         <vertical method="fill">75</vertical>
                     </sizing>
                     <surface>
-                        <panel dark="true"/>
+                        <flat>#FF2B2B2B</flat>
                     </surface>
                     
                     <children>
@@ -31,7 +31,7 @@
                                 <all>5</all>
                             </padding>
                             <surface>
-                                <options-background/>
+                                <flat>#FF1E1E1E</flat>
                             </surface>
                             <horizontal-alignment>center</horizontal-alignment>
                             
@@ -47,10 +47,9 @@
                                     <sizing><horizontal method="fixed">50</horizontal><vertical method="fixed">40</vertical></sizing>
                                     <horizontal-alignment>center</horizontal-alignment>
                                     <vertical-alignment>center</vertical-alignment>
-                                    <surface><panel dark="true"/></surface>
                                     <children>
                                         <texture texture="craftitunes:textures/gui/icons/spotify.png" texture-width="64" texture-height="64" region-width="64" region-height="64" u="0" v="0">
-                                            <sizing><horizontal method="fixed">24</horizontal><vertical method="fixed">24</vertical></sizing>
+                                            <sizing><horizontal method="fixed">28</horizontal><vertical method="fixed">28</vertical></sizing>
                                         </texture>
                                     </children>
                                 </flow-layout>
@@ -59,11 +58,10 @@
                                     <sizing><horizontal method="fixed">50</horizontal><vertical method="fixed">40</vertical></sizing>
                                     <horizontal-alignment>center</horizontal-alignment>
                                     <vertical-alignment>center</vertical-alignment>
-                                    <surface><panel dark="true"/></surface>
                                     <margins><top>10</top></margins>
                                     <children>
                                         <texture texture="craftitunes:textures/gui/icons/yt_music.png" texture-width="64" texture-height="64" region-width="64" region-height="64" u="0" v="0">
-                                            <sizing><horizontal method="fixed">24</horizontal><vertical method="fixed">24</vertical></sizing>
+                                            <sizing><horizontal method="fixed">28</horizontal><vertical method="fixed">28</vertical></sizing>
                                         </texture>
                                     </children>
                                 </flow-layout>
@@ -72,11 +70,10 @@
                                     <sizing><horizontal method="fixed">50</horizontal><vertical method="fixed">40</vertical></sizing>
                                     <horizontal-alignment>center</horizontal-alignment>
                                     <vertical-alignment>center</vertical-alignment>
-                                    <surface><panel dark="true"/></surface>
                                     <margins><top>10</top></margins>
                                     <children>
                                         <texture texture="craftitunes:textures/gui/icons/apple.png" texture-width="64" texture-height="64" region-width="64" region-height="64" u="0" v="0">
-                                            <sizing><horizontal method="fixed">24</horizontal><vertical method="fixed">24</vertical></sizing>
+                                            <sizing><horizontal method="fixed">28</horizontal><vertical method="fixed">28</vertical></sizing>
                                         </texture>
                                     </children>
                                 </flow-layout>
@@ -85,11 +82,10 @@
                                     <sizing><horizontal method="fixed">50</horizontal><vertical method="fixed">40</vertical></sizing>
                                     <horizontal-alignment>center</horizontal-alignment>
                                     <vertical-alignment>center</vertical-alignment>
-                                    <surface><panel dark="true"/></surface>
                                     <margins><top>10</top></margins>
                                     <children>
                                         <texture texture="craftitunes:textures/gui/icons/prime.png" texture-width="64" texture-height="64" region-width="64" region-height="64" u="0" v="0">
-                                            <sizing><horizontal method="fixed">24</horizontal><vertical method="fixed">24</vertical></sizing>
+                                            <sizing><horizontal method="fixed">28</horizontal><vertical method="fixed">28</vertical></sizing>
                                         </texture>
                                     </children>
                                 </flow-layout>
@@ -98,11 +94,10 @@
                                     <sizing><horizontal method="fixed">50</horizontal><vertical method="fixed">40</vertical></sizing>
                                     <horizontal-alignment>center</horizontal-alignment>
                                     <vertical-alignment>center</vertical-alignment>
-                                    <surface><panel dark="true"/></surface>
                                     <margins><top>10</top></margins>
                                     <children>
                                         <texture texture="craftitunes:textures/gui/icons/local.png" texture-width="64" texture-height="64" region-width="64" region-height="64" u="0" v="0">
-                                            <sizing><horizontal method="fixed">24</horizontal><vertical method="fixed">24</vertical></sizing>
+                                            <sizing><horizontal method="fixed">28</horizontal><vertical method="fixed">28</vertical></sizing>
                                         </texture>
                                     </children>
                                 </flow-layout>
@@ -116,11 +111,10 @@
                                     <sizing><horizontal method="fixed">50</horizontal><vertical method="fixed">40</vertical></sizing>
                                     <horizontal-alignment>center</horizontal-alignment>
                                     <vertical-alignment>center</vertical-alignment>
-                                    <surface><panel dark="true"/></surface>
                                     <margins><bottom>10</bottom></margins>
                                     <children>
                                         <texture texture="craftitunes:textures/gui/icons/settings.png" texture-width="64" texture-height="64" region-width="64" region-height="64" u="0" v="0">
-                                            <sizing><horizontal method="fixed">24</horizontal><vertical method="fixed">24</vertical></sizing>
+                                            <sizing><horizontal method="fixed">28</horizontal><vertical method="fixed">28</vertical></sizing>
                                         </texture>
                                     </children>
                                 </flow-layout>
@@ -165,7 +159,7 @@
                                     <vertical-alignment>center</vertical-alignment>
                                     <padding><all>10</all></padding>
                                     <margins><top>15</top></margins>
-                                    <surface><panel dark="true"/></surface>
+                                    <surface><flat>#FF1E1E1E</flat></surface>
                                     
                                     <children>
                                         <!-- Left: Track Name -->

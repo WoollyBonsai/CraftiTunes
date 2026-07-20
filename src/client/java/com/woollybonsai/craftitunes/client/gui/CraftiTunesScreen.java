@@ -139,48 +139,89 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
             
             // Left Sidebar (Folders)
             FlowLayout sidebar = Containers.verticalFlow(Sizing.fill(30), Sizing.content());
-            sidebar.child(Components.label(Component.literal("Folders")).margins(Insets.bottom(5)));
-            FlowLayout folders = Containers.horizontalFlow(Sizing.fill(100), Sizing.content());
-            folders.child(Components.button(Component.literal("My Playlists"), b -> {}).sizing(Sizing.fixed(80)).margins(Insets.of(0, 5, 0, 5)));
-            folders.child(Components.button(Component.literal("Chill Vibes"), b -> {}).sizing(Sizing.fixed(80)).margins(Insets.bottom(5)));
+            sidebar.padding(Insets.of(10));
+            sidebar.surface(Surface.flat(0xFF1E1E1E));
+            sidebar.child(Components.label(Component.literal("Folders")).shadow(true).margins(Insets.bottom(5)));
+            
+            FlowLayout folders = Containers.verticalFlow(Sizing.fill(100), Sizing.content());
+            String[] mockFolders = {"Downloads", "Music", "Minecraft"};
+            for (String f : mockFolders) {
+                FlowLayout fCard = Containers.horizontalFlow(Sizing.fill(100), Sizing.fixed(30));
+                fCard.surface(Surface.flat(0xFF333333));
+                fCard.margins(Insets.bottom(5)).padding(Insets.of(5));
+                fCard.verticalAlignment(io.wispforest.owo.ui.core.VerticalAlignment.CENTER);
+                fCard.child(Components.label(Component.literal("📁 " + f)).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFBBBBBB)));
+                folders.child(fCard);
+            }
             sidebar.child(folders);
+
+            sidebar.child(Components.label(Component.literal("Playlists")).shadow(true).margins(Insets.bottom(5).top(10)));
+            FlowLayout playlists = Containers.verticalFlow(Sizing.fill(100), Sizing.content());
+            ButtonComponent newPlaylistBtn = Components.button(Component.literal("+ New Playlist"), b -> {});
+            newPlaylistBtn.sizing(Sizing.fill(100), Sizing.fixed(20)).margins(Insets.bottom(5));
+            playlists.child(newPlaylistBtn);
+            
+            String[] mockPlaylists = {"Chill Vibes", "Gaming", "Workout"};
+            for (String p : mockPlaylists) {
+                FlowLayout pCard = Containers.horizontalFlow(Sizing.fill(100), Sizing.fixed(30));
+                pCard.surface(Surface.flat(0xFF333333));
+                pCard.margins(Insets.bottom(5)).padding(Insets.of(5));
+                pCard.verticalAlignment(io.wispforest.owo.ui.core.VerticalAlignment.CENTER);
+                pCard.child(Components.label(Component.literal("🎵 " + p)).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFBBBBBB)));
+                playlists.child(pCard);
+            }
+            sidebar.child(playlists);
 
             // Right Main Area (Tracks)
             FlowLayout trackList = Containers.verticalFlow(Sizing.fill(70), Sizing.content());
             trackList.padding(Insets.left(10));
             
             FlowLayout tableHeader = Containers.horizontalFlow(Sizing.fill(100), Sizing.fixed(20));
-            tableHeader.child(Components.label(Component.literal("Track Name")).sizing(Sizing.fill(45), Sizing.content()));
-            tableHeader.child(Components.label(Component.literal("Artist")).sizing(Sizing.fill(20), Sizing.content()));
-            tableHeader.child(Components.label(Component.literal("Duration")).sizing(Sizing.fill(15), Sizing.content()));
+            tableHeader.surface(Surface.flat(0xFF2B2B2B));
+            tableHeader.child(Components.label(Component.literal("Track Name")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)).sizing(Sizing.fill(45), Sizing.content()));
+            tableHeader.child(Components.label(Component.literal("Artist")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)).sizing(Sizing.fill(20), Sizing.content()));
+            tableHeader.child(Components.label(Component.literal("Duration")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)).sizing(Sizing.fill(15), Sizing.content()));
             trackList.child(tableHeader);
+            
+            trackList.child(Containers.horizontalFlow(Sizing.fill(100), Sizing.fixed(1)).surface(Surface.flat(0xFF444444)).margins(Insets.bottom(10)));
 
             File musicDir = new File("/home/woolly/Work/Minecraft_Mods/Craftitunes/test_music");
             if (musicDir.exists() && musicDir.isDirectory()) {
                 File[] files = musicDir.listFiles((d, name) -> name.endsWith(".mp3") || name.endsWith(".wav") || name.endsWith(".ogg"));
                 if (files != null && files.length > 0) {
                     for (File file : files) {
-                        FlowLayout row = Containers.horizontalFlow(Sizing.fill(100), Sizing.fixed(22));
+                        FlowLayout row = Containers.horizontalFlow(Sizing.fill(100), Sizing.fixed(30));
+                        row.verticalAlignment(io.wispforest.owo.ui.core.VerticalAlignment.CENTER);
+                        row.padding(Insets.of(5));
+                        row.surface(Surface.flat(0xFF333333));
                         row.margins(Insets.bottom(2));
                         
-                        // Right-click logic to queue track
+                        // Hover effect
+                        row.mouseEnter().subscribe(() -> row.surface(Surface.flat(0xFF444444)));
+                        row.mouseLeave().subscribe(() -> row.surface(Surface.flat(0xFF333333)));
+                        
                         row.mouseDown().subscribe((mouseX, mouseY, button) -> {
-                            if (button == 1) { // Right click -> Queue
+                            if (button == 0) {
+                                AudioEngine.getScheduler().clearQueue();
+                                AudioEngine.getPlayer().stopTrack();
+                                AudioEngine.loadAndPlay(file.getAbsolutePath());
+                                return true;
+                            } else if (button == 1) { // Right click -> Queue
                                 AudioEngine.loadAndPlay(file.getAbsolutePath());
                                 return true;
                             }
                             return false;
                         });
                         
-                        LabelComponent nameLbl = Components.label(Component.literal(formatTrackName(file.getName())));
-                        nameLbl.sizing(Sizing.fill(45), Sizing.content());
-                        row.child(nameLbl);
+                        FlowLayout titleArea = Containers.verticalFlow(Sizing.fill(45), Sizing.content());
+                        titleArea.child(Components.label(Component.literal(formatTrackName(file.getName()))).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFFFFFFF)));
+                        row.child(titleArea);
                         
-                        LabelComponent artistLbl = Components.label(Component.literal("Unknown Artist"));
+                        LabelComponent artistLbl = Components.label(Component.literal("Unknown Artist")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA));
                         artistLbl.sizing(Sizing.fill(20), Sizing.content());
                         row.child(artistLbl);
                         
-                        LabelComponent durLbl = Components.label(Component.literal("--:--"));
+                        LabelComponent durLbl = Components.label(Component.literal("3:00")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA));
                         durLbl.sizing(Sizing.fill(15), Sizing.content());
                         row.child(durLbl);
                         
@@ -204,10 +245,10 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                         trackList.child(row);
                     }
                 } else {
-                    trackList.child(Components.label(Component.literal("No tracks found.")));
+                    trackList.child(Components.label(Component.literal("No tracks found.")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)));
                 }
             } else {
-                trackList.child(Components.label(Component.literal("test_music folder not found.")));
+                trackList.child(Components.label(Component.literal("test_music folder not found.")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)));
             }
 
             splitView.child(sidebar);
