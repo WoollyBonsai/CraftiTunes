@@ -96,7 +96,7 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
 
         if (trackList != null) {
             setupTabs(rootComponent, trackList);
-            loadTab(trackList, "Local Files");
+            loadTab(rootComponent, trackList, "Local Files");
         }
     }
 
@@ -108,15 +108,38 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
             ButtonComponent tabBtn = rootComponent.childById(ButtonComponent.class, tabs[i]);
             if (tabBtn != null) {
                 tabBtn.onPress(button -> {
-                    loadTab(trackList, tabTitle);
+                    loadTab(rootComponent, trackList, tabTitle);
                 });
             }
         }
     }
 
-    private void loadTab(FlowLayout trackList, String tabName) {
+    private void loadTab(FlowLayout root, FlowLayout trackList, String tabName) {
         trackList.clearChildren();
+        FlowLayout sidebar = root.childById(FlowLayout.class, "left-sidebar");
+        LabelComponent header = root.childById(LabelComponent.class, "header-label");
+        
+        if (sidebar != null) sidebar.clearChildren();
+        
+        int themeColor = 0xFFFFFF; // Default white
+        if (tabName.equals("Spotify")) themeColor = 0x1DB954;
+        else if (tabName.equals("YT Music")) themeColor = 0xFF0000;
+        else if (tabName.equals("Apple Music")) themeColor = 0xFA243C;
+        else if (tabName.equals("Prime Music")) themeColor = 0x00A8E1;
+        
+        if (header != null) {
+            header.text(Component.literal(tabName.toUpperCase()));
+            header.color(io.wispforest.owo.ui.core.Color.ofArgb(0xFF000000 | themeColor));
+        }
+
         if (tabName.equals("Local Files")) {
+            if (sidebar != null) {
+                sidebar.child(Components.label(Component.literal("Folders")).margins(Insets.bottom(5)));
+                FlowLayout folders = Containers.horizontalFlow(Sizing.fill(100), Sizing.content());
+                folders.child(Components.button(Component.literal("My Playlists"), b -> {}).sizing(Sizing.fixed(80)).margins(Insets.of(0, 5, 0, 5)));
+                folders.child(Components.button(Component.literal("Chill Vibes"), b -> {}).sizing(Sizing.fixed(80)).margins(Insets.bottom(5)));
+                sidebar.child(folders);
+            }
             File musicDir = new File("/home/woolly/Work/Minecraft_Mods/Craftitunes/test_music");
             if (musicDir.exists() && musicDir.isDirectory()) {
                 File[] files = musicDir.listFiles((d, name) -> name.endsWith(".mp3") || name.endsWith(".wav"));
@@ -172,6 +195,22 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                 trackList.child(Components.label(Component.literal("test_music folder not found.")));
             }
         } else {
+            // Dummy content for Streaming Services
+            if (sidebar != null) {
+                if (tabName.equals("Spotify")) {
+                    sidebar.child(Components.label(Component.literal("Your Library")).margins(Insets.bottom(5)));
+                    sidebar.child(Components.button(Component.literal("Liked Songs"), b -> {}).sizing(Sizing.fill(100)).margins(Insets.bottom(5)));
+                    sidebar.child(Components.button(Component.literal("Made For You"), b -> {}).sizing(Sizing.fill(100)).margins(Insets.bottom(5)));
+                } else if (tabName.equals("YT Music")) {
+                    sidebar.child(Components.label(Component.literal("Library")).margins(Insets.bottom(5)));
+                    sidebar.child(Components.button(Component.literal("Downloads"), b -> {}).sizing(Sizing.fill(100)).margins(Insets.bottom(5)));
+                    sidebar.child(Components.button(Component.literal("Supermix"), b -> {}).sizing(Sizing.fill(100)).margins(Insets.bottom(5)));
+                } else {
+                    sidebar.child(Components.label(Component.literal("Playlists")).margins(Insets.bottom(5)));
+                    sidebar.child(Components.button(Component.literal("Favorites"), b -> {}).sizing(Sizing.fill(100)).margins(Insets.bottom(5)));
+                }
+            }
+
             LabelComponent lbl = Components.label(Component.literal(tabName + " API Integration Coming Soon!"));
             lbl.margins(Insets.top(20));
             trackList.child(lbl);

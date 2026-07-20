@@ -114,13 +114,13 @@
                                 <flow-layout direction="horizontal">
                                     <sizing>
                                         <horizontal method="fill">100</horizontal>
-                                        <vertical method="fill">100</vertical>
+                                        <vertical method="fill">85</vertical>
                                     </sizing>
                                     
                                     <children>
-                                        <!-- Left Side: Folders & Playlists Grid (Placeholder styling) -->
+                                        <!-- Left Side: Folders & Playlists Grid -->
                                         <scroll direction="vertical">
-                                            <flow-layout direction="vertical">
+                                            <flow-layout direction="vertical" id="left-sidebar">
                                                 <sizing><horizontal method="fill">100</horizontal><vertical method="content"></vertical></sizing>
                                                 <children>
                                                     <label><text>Folders</text><margins><bottom>5</bottom></margins></label>
