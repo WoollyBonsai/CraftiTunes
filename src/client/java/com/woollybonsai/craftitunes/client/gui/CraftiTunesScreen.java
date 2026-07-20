@@ -107,10 +107,14 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
         String[] names = {"Local Files", "Spotify", "YT Music", "Apple Music", "Prime Music", "Settings"};
         for (int i = 0; i < tabs.length; i++) {
             final String tabTitle = names[i];
-            ButtonComponent tabBtn = rootComponent.childById(ButtonComponent.class, tabs[i]);
+            FlowLayout tabBtn = rootComponent.childById(FlowLayout.class, tabs[i]);
             if (tabBtn != null) {
-                tabBtn.onPress(button -> {
-                    loadTab(rootComponent, contentContainer, tabTitle);
+                tabBtn.mouseDown().subscribe((mouseX, mouseY, button) -> {
+                    if (button == 0) {
+                        loadTab(rootComponent, contentContainer, tabTitle);
+                        return true;
+                    }
+                    return false;
                 });
             }
         }

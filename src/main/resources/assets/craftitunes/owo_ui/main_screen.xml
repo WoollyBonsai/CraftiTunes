@@ -43,41 +43,87 @@
                                     <margins><bottom>20</bottom><top>10</top></margins>
                                 </label>
                                 
-                                <button id="tab-spotify">
-                                    <text>SPO</text>
+                                <flow-layout id="tab-spotify" direction="vertical">
                                     <sizing><horizontal method="fixed">50</horizontal><vertical method="fixed">40</vertical></sizing>
-                                </button>
-                                <button id="tab-yt-music">
-                                    <text>YT</text>
+                                    <horizontal-alignment>center</horizontal-alignment>
+                                    <vertical-alignment>center</vertical-alignment>
+                                    <surface><panel dark="true"/></surface>
+                                    <children>
+                                        <texture texture="craftitunes:textures/gui/icons/spotify.png" texture-width="64" texture-height="64" region-width="64" region-height="64" u="0" v="0">
+                                            <sizing><horizontal method="fixed">24</horizontal><vertical method="fixed">24</vertical></sizing>
+                                        </texture>
+                                    </children>
+                                </flow-layout>
+                                
+                                <flow-layout id="tab-yt-music" direction="vertical">
                                     <sizing><horizontal method="fixed">50</horizontal><vertical method="fixed">40</vertical></sizing>
+                                    <horizontal-alignment>center</horizontal-alignment>
+                                    <vertical-alignment>center</vertical-alignment>
+                                    <surface><panel dark="true"/></surface>
                                     <margins><top>10</top></margins>
-                                </button>
-                                <button id="tab-apple">
-                                    <text>APL</text>
+                                    <children>
+                                        <texture texture="craftitunes:textures/gui/icons/yt_music.png" texture-width="64" texture-height="64" region-width="64" region-height="64" u="0" v="0">
+                                            <sizing><horizontal method="fixed">24</horizontal><vertical method="fixed">24</vertical></sizing>
+                                        </texture>
+                                    </children>
+                                </flow-layout>
+                                
+                                <flow-layout id="tab-apple" direction="vertical">
                                     <sizing><horizontal method="fixed">50</horizontal><vertical method="fixed">40</vertical></sizing>
+                                    <horizontal-alignment>center</horizontal-alignment>
+                                    <vertical-alignment>center</vertical-alignment>
+                                    <surface><panel dark="true"/></surface>
                                     <margins><top>10</top></margins>
-                                </button>
-                                <button id="tab-prime">
-                                    <text>AMZ</text>
+                                    <children>
+                                        <texture texture="craftitunes:textures/gui/icons/apple.png" texture-width="64" texture-height="64" region-width="64" region-height="64" u="0" v="0">
+                                            <sizing><horizontal method="fixed">24</horizontal><vertical method="fixed">24</vertical></sizing>
+                                        </texture>
+                                    </children>
+                                </flow-layout>
+                                
+                                <flow-layout id="tab-prime" direction="vertical">
                                     <sizing><horizontal method="fixed">50</horizontal><vertical method="fixed">40</vertical></sizing>
+                                    <horizontal-alignment>center</horizontal-alignment>
+                                    <vertical-alignment>center</vertical-alignment>
+                                    <surface><panel dark="true"/></surface>
                                     <margins><top>10</top></margins>
-                                </button>
-                                <button id="tab-local">
-                                    <text>LOC</text>
+                                    <children>
+                                        <texture texture="craftitunes:textures/gui/icons/prime.png" texture-width="64" texture-height="64" region-width="64" region-height="64" u="0" v="0">
+                                            <sizing><horizontal method="fixed">24</horizontal><vertical method="fixed">24</vertical></sizing>
+                                        </texture>
+                                    </children>
+                                </flow-layout>
+                                
+                                <flow-layout id="tab-local" direction="vertical">
                                     <sizing><horizontal method="fixed">50</horizontal><vertical method="fixed">40</vertical></sizing>
+                                    <horizontal-alignment>center</horizontal-alignment>
+                                    <vertical-alignment>center</vertical-alignment>
+                                    <surface><panel dark="true"/></surface>
                                     <margins><top>10</top></margins>
-                                </button>
+                                    <children>
+                                        <texture texture="craftitunes:textures/gui/icons/local.png" texture-width="64" texture-height="64" region-width="64" region-height="64" u="0" v="0">
+                                            <sizing><horizontal method="fixed">24</horizontal><vertical method="fixed">24</vertical></sizing>
+                                        </texture>
+                                    </children>
+                                </flow-layout>
                                 
                                 <!-- Spacer -->
                                 <flow-layout direction="vertical">
                                     <sizing><horizontal method="fill">100</horizontal><vertical method="fill">100</vertical></sizing>
                                 </flow-layout>
                                 
-                                <button id="tab-settings">
-                                    <text>SET</text>
+                                <flow-layout id="tab-settings" direction="vertical">
                                     <sizing><horizontal method="fixed">50</horizontal><vertical method="fixed">40</vertical></sizing>
+                                    <horizontal-alignment>center</horizontal-alignment>
+                                    <vertical-alignment>center</vertical-alignment>
+                                    <surface><panel dark="true"/></surface>
                                     <margins><bottom>10</bottom></margins>
-                                </button>
+                                    <children>
+                                        <texture texture="craftitunes:textures/gui/icons/settings.png" texture-width="64" texture-height="64" region-width="64" region-height="64" u="0" v="0">
+                                            <sizing><horizontal method="fixed">24</horizontal><vertical method="fixed">24</vertical></sizing>
+                                        </texture>
+                                    </children>
+                                </flow-layout>
                             </children>
                         </flow-layout>
                         
