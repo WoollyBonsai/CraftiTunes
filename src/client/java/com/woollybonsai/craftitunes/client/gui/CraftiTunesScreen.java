@@ -197,7 +197,7 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
             
             trackList.child(Containers.horizontalFlow(Sizing.fill(100), Sizing.fixed(1)).surface(Surface.flat(0xFF444444)).margins(Insets.bottom(10)));
 
-            File musicDir = new File(net.minecraft.client.Minecraft.getInstance().gameDirectory.getAbsolutePath(), "test_music");
+            File musicDir = new File("/home/woolly/Work/Minecraft_Mods/Craftitunes/test_music");
             if (musicDir.exists() && musicDir.isDirectory()) {
                 File[] files = musicDir.listFiles((d, name) -> name.endsWith(".mp3") || name.endsWith(".wav") || name.endsWith(".ogg"));
                 if (files != null && files.length > 0) {
@@ -435,9 +435,13 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                     return;
                 }
                 
+                int nullTracks = 0;
                 for (var trackItem : tracks) {
                     var track = trackItem.track();
-                    if (track == null) continue;
+                    if (track == null) {
+                        nullTracks++;
+                        continue;
+                    }
                     
                     String trackName = track.name() != null ? track.name() : "Unknown Track";
                     String trackArtists = track.getArtistNames() != null ? track.getArtistNames() : "Unknown Artist";
@@ -461,17 +465,17 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                         return false;
                     });
                     
-                    LabelComponent titleLbl = Components.label(Component.literal(trackName));
-                    titleLbl.sizing(Sizing.fill(50), Sizing.content());
-                    row.child(titleLbl);
+                    FlowLayout titleBox = Containers.horizontalFlow(Sizing.fill(50), Sizing.content());
+                    titleBox.child(Components.label(Component.literal(trackName)).sizing(Sizing.content(), Sizing.content()));
+                    row.child(titleBox);
                     
-                    LabelComponent artistLbl = Components.label(Component.literal(trackArtists));
-                    artistLbl.color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA));
-                    artistLbl.sizing(Sizing.fill(50), Sizing.content());
-                    row.child(artistLbl);
+                    FlowLayout artistBox = Containers.horizontalFlow(Sizing.fill(50), Sizing.content());
+                    artistBox.child(Components.label(Component.literal(trackArtists)).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)).sizing(Sizing.content(), Sizing.content()));
+                    row.child(artistBox);
                     
                     contentContainer.child(row);
                 }
+                System.out.println("Skipped " + nullTracks + " null tracks.");
             });
         });
     }

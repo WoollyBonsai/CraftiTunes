@@ -130,6 +130,7 @@
                             <padding>
                                 <all>15</all>
                             </padding>
+                            <horizontal-alignment>center</horizontal-alignment>
                             
                             <children>
                                 <!-- Top: Search -->
@@ -153,7 +154,7 @@
                                 <!-- Bottom: Playback Controls -->
                                 <flow-layout direction="horizontal">
                                     <sizing>
-                                        <horizontal method="fill">100</horizontal>
+                                        <horizontal method="fill">85</horizontal>
                                         <vertical method="fixed">50</vertical>
                                     </sizing>
                                     <vertical-alignment>center</vertical-alignment>
