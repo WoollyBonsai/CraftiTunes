@@ -42,12 +42,14 @@ public class SpotifyAuthManager {
                     "&scope=" + SCOPES.replace(" ", "%20") +
                     "&redirect_uri=" + REDIRECT_URI.replace(":", "%3A").replace("/", "%2F") +
                     "&code_challenge_method=S256" +
-                    "&code_challenge=" + codeChallenge;
+                    "&code_challenge=" + codeChallenge +
+                    "&show_dialog=true";
 
             if (net.minecraft.Util.getPlatform() != net.minecraft.Util.OS.UNKNOWN) {
                 net.minecraft.Util.getPlatform().openUri(new URI(authUrl));
                 if (Minecraft.getInstance().player != null) {
-                    Minecraft.getInstance().player.displayClientMessage(Component.literal("§aOpened browser for Spotify Authentication..."), false);
+                    Minecraft.getInstance().keyboardHandler.setClipboard(authUrl);
+                    Minecraft.getInstance().player.displayClientMessage(Component.literal("§aBrowser opening! (Link also copied to clipboard just in case)"), false);
                 }
             } else {
                 System.out.println("Desktop browse not supported. Please go to: " + authUrl);
