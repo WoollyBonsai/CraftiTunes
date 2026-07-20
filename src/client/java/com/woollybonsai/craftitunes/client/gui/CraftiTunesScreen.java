@@ -138,8 +138,9 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
             FlowLayout splitView = Containers.horizontalFlow(Sizing.fill(100), Sizing.content());
             
             // Left Sidebar (Folders)
-            FlowLayout sidebar = Containers.verticalFlow(Sizing.fill(30), Sizing.content());
+            FlowLayout sidebar = Containers.verticalFlow(Sizing.fill(28), Sizing.content());
             sidebar.padding(Insets.of(10));
+            sidebar.margins(Insets.right(5));
             sidebar.surface(Surface.flat(0xFF1E1E1E));
             sidebar.child(Components.label(Component.literal("Folders")).shadow(true).margins(Insets.bottom(5)));
             
@@ -173,8 +174,8 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
             sidebar.child(playlists);
 
             // Right Main Area (Tracks)
-            FlowLayout trackList = Containers.verticalFlow(Sizing.fill(70), Sizing.content());
-            trackList.padding(Insets.left(10));
+            FlowLayout trackList = Containers.verticalFlow(Sizing.fill(68), Sizing.content());
+            trackList.padding(Insets.left(5));
             
             FlowLayout tableHeader = Containers.horizontalFlow(Sizing.fill(100), Sizing.fixed(20));
             tableHeader.surface(Surface.flat(0xFF2B2B2B));

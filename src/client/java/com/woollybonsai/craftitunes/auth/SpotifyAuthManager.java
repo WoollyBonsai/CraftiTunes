@@ -44,8 +44,8 @@ public class SpotifyAuthManager {
                     "&code_challenge_method=S256" +
                     "&code_challenge=" + codeChallenge;
 
-            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                Desktop.getDesktop().browse(new URI(authUrl));
+            if (net.minecraft.Util.getPlatform() != net.minecraft.Util.OS.UNKNOWN) {
+                net.minecraft.Util.getPlatform().openUri(new URI(authUrl));
                 if (Minecraft.getInstance().player != null) {
                     Minecraft.getInstance().player.displayClientMessage(Component.literal("§aOpened browser for Spotify Authentication..."), false);
                 }
