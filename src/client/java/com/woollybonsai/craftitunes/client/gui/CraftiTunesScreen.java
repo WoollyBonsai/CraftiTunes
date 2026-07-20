@@ -65,6 +65,7 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
 
         SliderComponent slider = rootComponent.childById(SliderComponent.class, "track-slider");
         if (slider != null) {
+            slider.margins(Insets.horizontal(15));
             slider.onChanged().subscribe(value -> {
                 AudioTrack track = AudioEngine.getPlayer().getPlayingTrack();
                 if (track != null) {
@@ -77,80 +78,90 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
             });
         }
         
-        FlowLayout trackList = rootComponent.childById(FlowLayout.class, "track-list");
+        FlowLayout contentContainer = rootComponent.childById(FlowLayout.class, "content-container");
         
         ButtonComponent queueBtn = rootComponent.childById(ButtonComponent.class, "btn-queue");
-        if (queueBtn != null && trackList != null) {
+        if (queueBtn != null && contentContainer != null) {
             queueBtn.onPress(button -> {
-                trackList.clearChildren();
+                contentContainer.clearChildren();
+                contentContainer.child(Components.label(Component.literal("QUEUE")).margins(Insets.bottom(10)));
                 for (AudioTrack t : AudioEngine.getScheduler().getQueue()) {
                     LabelComponent lbl = Components.label(Component.literal(t.getInfo().title));
                     lbl.margins(Insets.bottom(2));
-                    trackList.child(lbl);
+                    contentContainer.child(lbl);
                 }
                 if (AudioEngine.getScheduler().getQueue().isEmpty()) {
-                    trackList.child(Components.label(Component.literal("Queue is empty.")));
+                    contentContainer.child(Components.label(Component.literal("Queue is empty.")));
                 }
             });
         }
 
-        if (trackList != null) {
-            setupTabs(rootComponent, trackList);
-            loadTab(rootComponent, trackList, "Local Files");
+        if (contentContainer != null) {
+            setupTabs(rootComponent, contentContainer);
+            loadTab(rootComponent, contentContainer, "Local Files");
         }
     }
 
-    private void setupTabs(FlowLayout rootComponent, FlowLayout trackList) {
-        String[] tabs = {"tab-local", "tab-spotify", "tab-yt-music", "tab-apple", "tab-prime"};
-        String[] names = {"Local Files", "Spotify", "YT Music", "Apple Music", "Prime Music"};
+    private void setupTabs(FlowLayout rootComponent, FlowLayout contentContainer) {
+        String[] tabs = {"tab-local", "tab-spotify", "tab-yt-music", "tab-apple", "tab-prime", "tab-settings"};
+        String[] names = {"Local Files", "Spotify", "YT Music", "Apple Music", "Prime Music", "Settings"};
         for (int i = 0; i < tabs.length; i++) {
             final String tabTitle = names[i];
             ButtonComponent tabBtn = rootComponent.childById(ButtonComponent.class, tabs[i]);
             if (tabBtn != null) {
                 tabBtn.onPress(button -> {
-                    loadTab(rootComponent, trackList, tabTitle);
+                    loadTab(rootComponent, contentContainer, tabTitle);
                 });
             }
         }
     }
 
-    private void loadTab(FlowLayout root, FlowLayout trackList, String tabName) {
-        trackList.clearChildren();
-        FlowLayout sidebar = root.childById(FlowLayout.class, "left-sidebar");
-        LabelComponent header = root.childById(LabelComponent.class, "header-label");
-        
-        if (sidebar != null) sidebar.clearChildren();
+    private void loadTab(FlowLayout root, FlowLayout contentContainer, String tabName) {
+        contentContainer.clearChildren();
         
         int themeColor = 0xFFFFFF; // Default white
         if (tabName.equals("Spotify")) themeColor = 0x1DB954;
         else if (tabName.equals("YT Music")) themeColor = 0xFF0000;
         else if (tabName.equals("Apple Music")) themeColor = 0xFA243C;
         else if (tabName.equals("Prime Music")) themeColor = 0x00A8E1;
-        
-        if (header != null) {
-            header.text(Component.literal(tabName.toUpperCase()));
-            header.color(io.wispforest.owo.ui.core.Color.ofArgb(0xFF000000 | themeColor));
-        }
+        else if (tabName.equals("Settings")) themeColor = 0xAAAAAA;
 
         if (tabName.equals("Local Files")) {
-            if (sidebar != null) {
-                sidebar.child(Components.label(Component.literal("Folders")).margins(Insets.bottom(5)));
-                FlowLayout folders = Containers.horizontalFlow(Sizing.fill(100), Sizing.content());
-                folders.child(Components.button(Component.literal("My Playlists"), b -> {}).sizing(Sizing.fixed(80)).margins(Insets.of(0, 5, 0, 5)));
-                folders.child(Components.button(Component.literal("Chill Vibes"), b -> {}).sizing(Sizing.fixed(80)).margins(Insets.bottom(5)));
-                sidebar.child(folders);
-            }
+            LabelComponent header = Components.label(Component.literal(tabName.toUpperCase()));
+            header.color(io.wispforest.owo.ui.core.Color.ofArgb(0xFF000000 | themeColor)).shadow(true).margins(Insets.bottom(10));
+            contentContainer.child(header);
+
+            FlowLayout splitView = Containers.horizontalFlow(Sizing.fill(100), Sizing.content());
+            
+            // Left Sidebar (Folders)
+            FlowLayout sidebar = Containers.verticalFlow(Sizing.fill(30), Sizing.content());
+            sidebar.child(Components.label(Component.literal("Folders")).margins(Insets.bottom(5)));
+            FlowLayout folders = Containers.horizontalFlow(Sizing.fill(100), Sizing.content());
+            folders.child(Components.button(Component.literal("My Playlists"), b -> {}).sizing(Sizing.fixed(80)).margins(Insets.of(0, 5, 0, 5)));
+            folders.child(Components.button(Component.literal("Chill Vibes"), b -> {}).sizing(Sizing.fixed(80)).margins(Insets.bottom(5)));
+            sidebar.child(folders);
+
+            // Right Main Area (Tracks)
+            FlowLayout trackList = Containers.verticalFlow(Sizing.fill(70), Sizing.content());
+            trackList.padding(Insets.left(10));
+            
+            FlowLayout tableHeader = Containers.horizontalFlow(Sizing.fill(100), Sizing.fixed(20));
+            tableHeader.child(Components.label(Component.literal("Track Name")).sizing(Sizing.fill(45), Sizing.content()));
+            tableHeader.child(Components.label(Component.literal("Artist")).sizing(Sizing.fill(20), Sizing.content()));
+            tableHeader.child(Components.label(Component.literal("Duration")).sizing(Sizing.fill(15), Sizing.content()));
+            trackList.child(tableHeader);
+
             File musicDir = new File("/home/woolly/Work/Minecraft_Mods/Craftitunes/test_music");
             if (musicDir.exists() && musicDir.isDirectory()) {
-                File[] files = musicDir.listFiles((d, name) -> name.endsWith(".mp3") || name.endsWith(".wav"));
+                File[] files = musicDir.listFiles((d, name) -> name.endsWith(".mp3") || name.endsWith(".wav") || name.endsWith(".ogg"));
                 if (files != null && files.length > 0) {
                     for (File file : files) {
                         FlowLayout row = Containers.horizontalFlow(Sizing.fill(100), Sizing.fixed(22));
                         row.margins(Insets.bottom(2));
                         
-                        // Right-click logic on the row background
+                        // Right-click logic to queue track
                         row.mouseDown().subscribe((mouseX, mouseY, button) -> {
-                            if (button == 1) { // Right click
+                            if (button == 1) { // Right click -> Queue
                                 AudioEngine.loadAndPlay(file.getAbsolutePath());
                                 return true;
                             }
@@ -166,7 +177,7 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                         row.child(artistLbl);
                         
                         LabelComponent durLbl = Components.label(Component.literal("--:--"));
-                        durLbl.sizing(Sizing.fill(10), Sizing.content());
+                        durLbl.sizing(Sizing.fill(15), Sizing.content());
                         row.child(durLbl);
                         
                         ButtonComponent rowPlayBtn = Components.button(Component.literal(">"), btn -> {
@@ -194,26 +205,42 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
             } else {
                 trackList.child(Components.label(Component.literal("test_music folder not found.")));
             }
+
+            splitView.child(sidebar);
+            splitView.child(trackList);
+            contentContainer.child(splitView);
+        } else if (tabName.equals("Settings")) {
+            LabelComponent header = Components.label(Component.literal("CraftiTunes Settings"));
+            header.shadow(true).margins(Insets.bottom(15));
+            contentContainer.child(header);
+
+            contentContainer.child(Components.button(Component.literal("Aesthetics: Default Theme"), b -> {}).sizing(Sizing.fill(100)).margins(Insets.bottom(10)));
+            contentContainer.child(Components.button(Component.literal("Notifications: ON"), b -> {}).sizing(Sizing.fill(100)).margins(Insets.bottom(10)));
+            contentContainer.child(Components.button(Component.literal("Hotkeys: Configure..."), b -> {}).sizing(Sizing.fill(100)).margins(Insets.bottom(10)));
         } else {
-            // Dummy content for Streaming Services
-            if (sidebar != null) {
-                if (tabName.equals("Spotify")) {
-                    sidebar.child(Components.label(Component.literal("Your Library")).margins(Insets.bottom(5)));
-                    sidebar.child(Components.button(Component.literal("Liked Songs"), b -> {}).sizing(Sizing.fill(100)).margins(Insets.bottom(5)));
-                    sidebar.child(Components.button(Component.literal("Made For You"), b -> {}).sizing(Sizing.fill(100)).margins(Insets.bottom(5)));
-                } else if (tabName.equals("YT Music")) {
-                    sidebar.child(Components.label(Component.literal("Library")).margins(Insets.bottom(5)));
-                    sidebar.child(Components.button(Component.literal("Downloads"), b -> {}).sizing(Sizing.fill(100)).margins(Insets.bottom(5)));
-                    sidebar.child(Components.button(Component.literal("Supermix"), b -> {}).sizing(Sizing.fill(100)).margins(Insets.bottom(5)));
-                } else {
-                    sidebar.child(Components.label(Component.literal("Playlists")).margins(Insets.bottom(5)));
-                    sidebar.child(Components.button(Component.literal("Favorites"), b -> {}).sizing(Sizing.fill(100)).margins(Insets.bottom(5)));
-                }
-            }
+            // Streaming Services (Spotify, YT, etc)
+            LabelComponent header = Components.label(Component.literal(tabName.toUpperCase()));
+            header.color(io.wispforest.owo.ui.core.Color.ofArgb(0xFF000000 | themeColor)).shadow(true).margins(Insets.bottom(10));
+            contentContainer.child(header);
+            
+            contentContainer.child(Components.label(Component.literal("GOOD EVENING, Steve")).shadow(true).margins(Insets.bottom(10)));
+            
+            contentContainer.child(Components.label(Component.literal("Quick Access")).margins(Insets.bottom(5)));
+            FlowLayout quickGrid = Containers.horizontalFlow(Sizing.fill(100), Sizing.content());
+            quickGrid.child(Components.button(Component.literal("Liked Songs"), b -> {}).sizing(Sizing.fixed(120), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
+            quickGrid.child(Components.button(Component.literal("Daily Mix 1"), b -> {}).sizing(Sizing.fixed(120), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
+            quickGrid.child(Components.button(Component.literal("LoFi Beats"), b -> {}).sizing(Sizing.fixed(120), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
+            contentContainer.child(quickGrid);
+            
+            contentContainer.child(Components.label(Component.literal("Recommendations")).margins(Insets.top(15).bottom(5)));
+            FlowLayout recGrid = Containers.horizontalFlow(Sizing.fill(100), Sizing.content());
+            recGrid.child(Components.button(Component.literal("Discover Weekly"), b -> {}).sizing(Sizing.fixed(120), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
+            recGrid.child(Components.button(Component.literal("New Releases"), b -> {}).sizing(Sizing.fixed(120), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
+            contentContainer.child(recGrid);
 
             LabelComponent lbl = Components.label(Component.literal(tabName + " API Integration Coming Soon!"));
             lbl.margins(Insets.top(20));
-            trackList.child(lbl);
+            contentContainer.child(lbl);
         }
     }
 
@@ -245,6 +272,7 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                     
                     SliderComponent slider = this.uiAdapter.rootComponent.childById(SliderComponent.class, "track-slider");
                     if (slider != null && playing.getDuration() > 0) {
+                        // Always update slider if the music is paused OR if enough time passed to sync
                         if (System.currentTimeMillis() - lastSliderUpdate > 500) {
                             double expected = (double) playing.getPosition() / playing.getDuration();
                             if (Math.abs(slider.value() - expected) > 0.005) {
@@ -268,7 +296,7 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
 
     private String formatTrackName(String filename) {
         if (filename == null) return "";
-        String name = filename.replaceAll("\\.mp3$", "").replaceAll("\\.wav$", "");
+        String name = filename.replaceAll("\\.mp3$", "").replaceAll("\\.wav$", "").replaceAll("\\.ogg$", "");
         name = name.replace("_", " ").replace("-", " ");
         String[] words = name.split(" ");
         StringBuilder sb = new StringBuilder();

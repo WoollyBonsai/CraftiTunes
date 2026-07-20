@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CraftiTunes Interactive UI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+        :root {
+            --bg-color: #2b2b2b;
+            --sidebar-bg: #1e1e1e;
+            --border-dark: #000000;
+            --border-light: #555555;
+            --text-main: #ffffff;
+            --text-sub: #aaaaaa;
+            
+            /* Dynamic Accent Color */
+            --accent: #1db954; 
+        }
+
+        body {
+            background-color: #121212;
+            color: var(--text-main);
+            font-family: 'VT323', monospace;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            user-select: none;
+            overflow: hidden;
+            background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/master/assets/minecraft/textures/gui/options_background.png');
+            background-size: 64px;
+        }
+
+        /* Main MC Window Container */
+        .mc-window {
+            width: 90vw;
+            max-width: 1100px;
+            height: 85vh;
+            max-height: 750px;
+            background-color: var(--bg-color);
+            border: 4px solid var(--border-dark);
+            box-shadow: inset 4px 4px var(--border-light), inset -4px -4px #1a1a1a, 10px 10px 20px rgba(0,0,0,0.8);
+            display: flex;
+            position: relative;
+        }
+
+        /* Sidebar / Navbar */
+        .sidebar {
+            width: 70px;
+            background-color: var(--sidebar-bg);
+            border-right: 4px solid var(--border-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 0;
+            box-sizing: border-box;
+            position: relative;
+            z-index: 10;
+        }
+
+        .nav-item {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.1s;
+            box-sizing: border-box;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-item.active {
+            border-color: var(--accent);
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: inset 2px 2px rgba(255,255,255,0.2), inset -2px -2px rgba(0,0,0,0.5);
+        }
+
+        .nav-item svg {
+            width: 28px;
+            height: 28px;
+            fill: var(--text-main);
+        }
+
+        .settings-btn {
+            position: absolute;
+            bottom: 15px;
+            margin-bottom: 0;
+        }
+
+        /* Main Content Area */
+        .content-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Service Views */
+        .service-view {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+        .service-view.active {
+            display: flex;
+        }
+
+        /* Top Search Bar */
+        .search-bar {
+            background-color: #000;
+            border: 2px solid var(--accent);
+            color: #fff;
+            padding: 10px 12px;
+            font-family: 'VT323', monospace;
+            font-size: 20px;
+            outline: none;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+            box-shadow: inset 2px 2px #222;
+        }
+
+        /* Headers */
+        h1 { font-size: 32px; margin: 0 0 15px 0; text-transform: uppercase; text-shadow: 2px 2px #000; }
+        h2 { font-size: 20px; color: var(--text-sub); margin: 0 0 12px 0; text-transform: uppercase; }
+
+        /* Scrollable Content */
+        .scrollable {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding-right: 15px;
+            padding-bottom: 60px; /* Space for playback bar */
+        }
+
+        .scrollable::-webkit-scrollbar { width: 14px; background-color: #111; border-left: 2px solid #000;}
+        .scrollable::-webkit-scrollbar-thumb { background-color: #666; border: 2px solid #000; border-radius: 0; }
+        .scrollable::-webkit-scrollbar-thumb:hover { background-color: #888; }
+
+        /* Grids */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .grid-wide {
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        }
+
+        .card {
+            background-color: #3c3c3c;
+            border: 2px solid #111;
+            padding: 6px;
+            cursor: pointer;
+            box-shadow: inset 2px 2px #555, inset -2px -2px #222;
+            position: relative;
+        }
+        .card:hover { background-color: #4a4a4a; }
+
+        .card-img {
+            width: 100%;
+            aspect-ratio: 1;
+            margin-bottom: 8px;
+            border: 2px solid #000;
+            background-color: #111;
+            position: relative;
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .card-img.wide {
+            aspect-ratio: 16/9;
+        }
+
+        .card-title {
+            font-size: 18px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-shadow: 1px 1px #000;
+        }
+
+        /* Specialized Overlays */
+        .yt-play-icon {
+            position: absolute;
+            top: 5px; right: 5px;
+            width: 20px; height: 20px;
+            background-color: #ff0000;
+            border-radius: 4px;
+            display: flex; justify-content: center; align-items: center;
+            border: 1px solid #000;
+        }
+        .yt-play-icon::after {
+            content: "►"; color: white; font-size: 12px; margin-left: 2px;
+        }
+        
+        .tag-indicator {
+            position: absolute;
+            bottom: 5px; right: 5px;
+            background: rgba(0,0,0,0.8);
+            border: 1px solid var(--text-sub);
+            padding: 2px 4px;
+            font-size: 12px;
+            color: white;
+        }
+
+        /* List Items */
+        .list-container { display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+        .list-item {
+            display: flex; align-items: center;
+            background-color: #333; padding: 6px 10px;
+            border: 2px solid #111; cursor: pointer;
+        }
+        .list-item:hover { background-color: #444; border-color: var(--accent); }
+        .list-img { width: 40px; height: 40px; border: 2px solid #000; margin-right: 15px; background-size: cover;}
+        .list-info { display: flex; flex-direction: column; flex-grow: 1; }
+        .list-title { font-size: 18px; }
+        .list-sub { font-size: 16px; color: var(--text-sub); }
+
+        /* Cover Art Generators */
+        .art-1 { background: linear-gradient(45deg, #ff9a9e, #fecfef); }
+        .art-2 { background: linear-gradient(to right, #43e97b, #38f9d7); }
+        .art-3 { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .art-4 { background: radial-gradient(circle, #f77062, #fe5196); }
+        .art-5 { background: linear-gradient(to top, #0ba360, #3cba92); }
+        .art-mc-block { background-image: url('https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/master/assets/minecraft/textures/block/grass_block_side.png'); image-rendering: pixelated; }
+        .art-nether { background-image: url('https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/master/assets/minecraft/textures/block/netherrack.png'); image-rendering: pixelated; }
+        .art-redstone { background-image: url('https://raw.githubusercontent.com/InventivetalentDev/minecraft-assets/master/assets/minecraft/textures/block/redstone_block.png'); image-rendering: pixelated; }
+
+        /* Local Files Layout */
+        .local-layout {
+            display: flex; gap: 20px; height: 100%;
+        }
+        .local-sidebar {
+            width: 300px; display: flex; flex-direction: column; gap: 20px;
+        }
+        .local-main {
+            flex-grow: 1; display: flex; flex-direction: column;
+        }
+        .folder-icon {
+            font-size: 40px; color: #d4a373; text-align: center; text-shadow: 2px 2px #000;
+        }
+        .table-header {
+            display: flex; border-bottom: 2px solid #555; padding-bottom: 5px; margin-bottom: 10px;
+            color: var(--text-sub);
+        }
+        .col-name { flex: 2; }
+        .col-artist { flex: 1.5; }
+        .col-time { width: 50px; text-align: right; margin-right: 15px;}
+        .col-btns { width: 80px; }
+        .table-row {
+            display: flex; align-items: center; padding: 5px 0; border-bottom: 1px solid #333; cursor: pointer;
+        }
+        .table-row:hover { background-color: #333; }
+        .tb-btn {
+            background: #444; border: 2px solid #000; color: white; width: 24px; height: 24px; 
+            font-family: 'VT323'; cursor: pointer; margin-left: 2px;
+        }
+
+        /* Settings Menu */
+        .settings-menu {
+            display: flex; flex-direction: column; align-items: center; padding-top: 50px; height: 100%;
+        }
+        .mc-btn-large {
+            background-color: #3c3c3c; color: #fff; border: 3px solid #000;
+            box-shadow: inset 3px 3px #555, inset -3px -3px #222;
+            font-family: 'VT323', monospace; padding: 10px 20px; cursor: pointer;
+            font-size: 24px; width: 400px; margin-bottom: 15px; text-align: center;
+        }
+        .mc-btn-large:active { box-shadow: inset 3px 3px #222, inset -3px -3px #555; }
+
+        /* Bottom Playback Bar */
+        .bottom-bar {
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 50px;
+            background-color: #2b2b2b; border-top: 4px solid #000;
+            display: flex; align-items: center; padding: 0 20px; box-sizing: border-box; gap: 15px; z-index: 5;
+        }
+        .progress-container { display: flex; align-items: center; gap: 15px; flex-grow: 1; }
+        .progress-bar { flex-grow: 1; height: 14px; background-color: #000; border: 2px solid #555; position: relative; }
+        .progress-fill { position: absolute; top: 0; left: 0; height: 100%; width: 35%; background-color: var(--accent); }
+        .controls { display: flex; gap: 8px; }
+        .mc-btn {
+            background-color: #3c3c3c; color: #fff; border: 2px solid #000;
+            box-shadow: inset 2px 2px #555, inset -2px -2px #222;
+            font-family: 'VT323', monospace; padding: 4px 12px; cursor: pointer; font-size: 18px;
+        }
+        .mc-btn:active { box-shadow: inset 2px 2px #222, inset -2px -2px #555; }
+
+        /* Tooltip */
+        #mc-tooltip {
+            position: absolute; background-color: #110011; border: 3px solid #280068;
+            border-radius: 2px; padding: 8px; pointer-events: none; display: none; z-index: 1000;
+            box-shadow: inset 2px 2px #380098, inset -2px -2px #180038, 5px 5px 0px rgba(0,0,0,0.6);
+            font-size: 18px; white-space: nowrap; line-height: 1.2;
+        }
+        .tt-title { color: #ff55ff; margin-bottom: 4px;}
+        .tt-sub { color: #aaaaaa; }
+        .tt-action { color: #555555; font-size: 16px; margin-top: 6px;}
+
+    </style>
+</head>
+<body>
+
+    <div class="mc-window">
+        
+        <!-- Sidebar Navbar -->
+        <div class="sidebar">
+            <!-- Spotify -->
+            <div class="nav-item active" id="tab-spotify" onclick="switchService('spotify')" style="color: #1db954;" title="Spotify">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.6 14.4c-.2.3-.6.4-.9.2-2.5-1.5-5.7-1.9-9.5-1-.4.1-.7-.2-.8-.6-.1-.4.2-.7.6-.8 4.2-1 7.7-.5 10.5 1.2.3.2.4.6.1 1zm1-2.2c-.3.4-.8.5-1.2.3-2.9-1.8-6.9-2.3-10.6-1.3-.4.1-.9-.2-1-.6-.1-.4.2-.9.6-1 4.2-1.1 8.7-.6 12 1.4.4.3.5.8.2 1.2zm.1-2.4c-3.4-2-8.1-2.2-11.8-1.2-.5.1-1-.2-1.2-.7-.1-.5.2-1 .7-1.2 4.3-1.1 9.5-.9 13.4 1.4.5.3.6.9.3 1.4-.3.4-.9.6-1.4.3z"/></svg>
+            </div>
+            <!-- YT Music -->
+            <div class="nav-item" id="tab-yt" onclick="switchService('yt')" style="color: #ff0000;" title="YT Music">
+                <svg viewBox="0 0 24 24"><path d="M10 15l5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z"/></svg>
+            </div>
+            <!-- Apple Music -->
+            <div class="nav-item" id="tab-apple" onclick="switchService('apple')" style="color: #fa243c;" title="Apple Music">
+                <svg viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
+            </div>
+            <!-- Prime Music -->
+            <div class="nav-item" id="tab-prime" onclick="switchService('prime')" style="color: #00a8e1;" title="Amazon Music">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
+            </div>
+            <!-- Local Files -->
+            <div class="nav-item" id="tab-local" onclick="switchService('local')" style="color: #ffffff;" title="Local Files">
+                <svg viewBox="0 0 24 24"><path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>
+            </div>
+
+            <!-- Custom Improvised Settings Button -->
+            <div class="nav-item settings-btn" id="tab-settings" onclick="switchService('settings')" style="color: #aaaaaa;" title="Settings">
+                <svg viewBox="0 0 24 24">
+                    <rect x="2" y="2" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <circle cx="12" cy="12" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <line x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="2"/>
+                    <line x1="5" y1="12" x2="19" y2="12" stroke="currentColor" stroke-width="2"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Main Interface Area -->
+        <div class="content-area">
+            
+            <!-- SPOTIFY VIEW -->
+            <div id="view-spotify" class="service-view active">
+                <input type="text" class="search-bar" placeholder="Search..." autocomplete="off">
+                <div class="scrollable">
+                    <h1>GOOD EVENING, Steve</h1>
+                    <h2>Quick Access</h2>
+                    <div class="grid-container">
+                        <div class="card tooltip-trigger" data-title="Liked Songs" data-artist="Your Library" data-type="Playlist">
+                            <div class="card-img" style="background: #1db954; font-size: 50px; color: black; display:flex; justify-content:center; align-items:center;">♥</div>
+                            <div class="card-title">Liked Songs</div>
+                        </div>
+                        <div class="card tooltip-trigger" data-title="Daily Mix 1" data-artist="Made for Steve" data-type="Mix">
+                            <div class="card-img art-3"></div>
+                            <div class="card-title">Daily Mix 1</div>
+                        </div>
+                        <div class="card tooltip-trigger" data-title="Mineshaft LoFi" data-artist="C418 & Chill" data-type="Playlist">
+                            <div class="card-img art-mc-block"></div>
+                            <div class="card-title">Mineshaft LoFi</div>
+                        </div>
+                        <div class="card tooltip-trigger" data-title="Nether Rave" data-artist="Pigstep Prod." data-type="Album">
+                            <div class="card-img art-nether"></div>
+                            <div class="card-title">Nether Rave</div>
+                        </div>
+                    </div>
+                    <h2>Recommendations</h2>
+                    <div class="grid-container">
+                        <div class="card tooltip-trigger" data-title="Discover Weekly" data-artist="Spotify" data-type="Playlist">
+                            <div class="card-img art-1"></div>
+                            <div class="card-title">Discover Weekly</div>
+                        </div>
+                        <div class="card tooltip-trigger" data-title="Indie Folk" data-artist="Various Artists" data-type="Playlist">
+                            <div class="card-img art-4"></div>
+                            <div class="card-title">Indie Folk</div>
+                        </div>
+                    </div>
+                    <h2>Your Library</h2>
+                    <div class="list-container">
+                        <div class="list-item tooltip-trigger" data-title="Track Reliant" data-artist="C418-Inspired" data-type="Duration: 2:45">
+                            <div class="list-img art-mc-block"></div>
+                            <div class="list-info"><div class="list-title">Track Reliant</div><div class="list-sub">C418-Inspired</div></div>
+                        </div>
+                        <div class="list-item tooltip-trigger" data-title="Mineshaft Melodies" data-artist="C418-Inspired" data-type="Duration: 3:20">
+                            <div class="list-img art-mc-block"></div>
+                            <div class="list-info"><div class="list-title" style="color: #1db954;">Mineshaft Melodies</div><div class="list-sub">C418-Inspired</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- YT MUSIC VIEW -->
+            <div id="view-yt" class="service-view">
+                <input type="text" class="search-bar" placeholder="Search YT Music..." autocomplete="off">
+                <div class="scrollable">
+                    <h1>MIXED FOR YOU</h1>
+                    <h2>Quick Access</h2>
+                    <div class="grid-container">
+                        <div class="card tooltip-trigger" data-title="My Supermix" data-artist="YouTube Music" data-type="Mix">
+                            <div class="card-img art-4"><div class="yt-play-icon"></div></div>
+                            <div class="card-title">My Supermix</div>
+                        </div>
+                        <div class="card tooltip-trigger" data-title="New Releases Mix" data-artist="YouTube Music" data-type="Mix">
+                            <div class="card-img art-2"><div class="yt-play-icon"></div></div>
+                            <div class="card-title">New Releases Mix</div>
+                        </div>
+                        <div class="card tooltip-trigger" data-title="LoFi Beats Mix" data-artist="YouTube Music" data-type="Mix">
+                            <div class="card-img art-mc-block"><div class="yt-play-icon"></div></div>
+                            <div class="card-title">LoFi Beats Mix</div>
+                        </div>
+                    </div>
+                    <h2>New Releases & Live Performances</h2>
+                    <div class="grid-container grid-wide">
+                        <div class="card tooltip-trigger" data-title="Red Rocks (YT Cover)" data-artist="Minecraft Band" data-type="Live Video">
+                            <div class="card-img wide art-nether"><div class="yt-play-icon"></div></div>
+                            <div class="card-title">Live: Red Rocks (YT Cover)</div>
+                        </div>
+                        <div class="card tooltip-trigger" data-title="Overworld Beats" data-artist="Steve" data-type="Music Video">
+                            <div class="card-img wide art-mc-block"><div class="yt-play-icon"></div></div>
+                            <div class="card-title">Single: Overworld Beats</div>
+                        </div>
+                    </div>
+                    <h2>Your Saved Playlists & Artists</h2>
+                    <div class="list-container">
+                        <div class="list-item tooltip-trigger" data-title="YT Channel: Nether Synth" data-artist="Nether Walkers" data-type="Video Count: 120">
+                            <div class="list-img art-nether"></div>
+                            <div class="list-info"><div class="list-title">YT Channel: Nether Synth</div><div class="list-sub">Nether Synth</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- APPLE MUSIC VIEW -->
+            <div id="view-apple" class="service-view">
+                <input type="text" class="search-bar" placeholder="Search Apple Music catalog..." autocomplete="off">
+                <div class="scrollable">
+                    <h1>LISTEN NOW</h1>
+                    <h2>Quick Access</h2>
+                    <div class="grid-container">
+                        <div class="card tooltip-trigger" data-title="Top Picks station" data-artist="Apple Music" data-type="Station">
+                            <div class="card-img art-3"></div>
+                            <div class="card-title">Top Picks station</div>
+                        </div>
+                        <div class="card tooltip-trigger" data-title="Mineshaft Chillout" data-artist="Recently Played" data-type="Playlist">
+                            <div class="card-img art-mc-block"></div>
+                            <div class="card-title">Recently Played</div>
+                        </div>
+                        <div class="card tooltip-trigger" data-title="Redstone Rave" data-artist="Station" data-type="Station">
+                            <div class="card-img art-redstone"></div>
+                            <div class="card-title">Redstone station</div>
+                        </div>
+                    </div>
+                    <h2>Stations For You : Stations based on artist listening</h2>
+                    <div class="grid-container grid-wide">
+                        <div class="card tooltip-trigger" data-title="Nether Beats" data-artist="Spatial Audio" data-type="Station">
+                            <div class="card-img wide art-nether"><div class="tag-indicator">Spatial Audio</div></div>
+                            <div class="card-title">Cover 1: Nether Beats</div>
+                        </div>
+                        <div class="card tooltip-trigger" data-title="C418 Lossless Mix" data-artist="High Res" data-type="Station">
+                            <div class="card-img wide art-mc-block"><div class="tag-indicator">Lossless</div></div>
+                            <div class="card-title">Cover 3: C418 Lossless Mix</div>
+                        </div>
+                    </div>
+                    <h2>Your Library & Added Recently</h2>
+                    <div class="list-container">
+                        <div class="list-item tooltip-trigger" data-title="Apple Music Replay '26" data-artist="Various Explorers" data-type="Curated Made For You Mix">
+                            <div class="list-img art-4"></div>
+                            <div class="list-info"><div class="list-title">Cover Art: Made For You: Apple Music Replay '26</div><div class="list-sub">Made For You</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PRIME MUSIC VIEW -->
+            <div id="view-prime" class="service-view">
+                <input type="text" class="search-bar" placeholder="Search Prime Music catalog..." autocomplete="off">
+                <div class="scrollable">
+                    <h1>LISTEN NOW: PRIME SELECTS</h1>
+                    <h2>Quick Access</h2>
+                    <div class="grid-container">
+                        <div class="card tooltip-trigger" data-title="All-Access Hits" data-artist="Amazon" data-type="Playlist">
+                            <div class="card-img art-3"></div>
+                            <div class="card-title">All-Access Hits</div>
+                        </div>
+                        <div class="card tooltip-trigger" data-title="X-Ray Rock" data-artist="Amazon" data-type="X-Ray Lyrics Available">
+                            <div class="card-img art-5"></div>
+                            <div class="card-title">X-Ray Rock</div>
+                        </div>
+                        <div class="card tooltip-trigger" data-title="Prime Station" data-artist="Amazon" data-type="Station">
+                            <div class="card-img art-1"></div>
+                            <div class="card-title">Prime Station</div>
+                        </div>
+                    </div>
+                    <h2>Stations For You</h2>
+                    <div class="grid-container grid-wide">
+                        <div class="card tooltip-trigger" data-title="Pop Station" data-artist="Lossless" data-type="Station">
+                            <div class="card-img wide art-4"><div class="tag-indicator">Lossless</div></div>
+                            <div class="card-title">Cover Art: Pop Station</div>
+                        </div>
+                        <div class="card tooltip-trigger" data-title="Nether Rave Station" data-artist="Lossless" data-type="Station">
+                            <div class="card-img wide art-redstone"><div class="tag-indicator">Lossless</div></div>
+                            <div class="card-title">Cover Art: Nether Rave Station</div>
+                        </div>
+                    </div>
+                    <h2>Your Library & Added Recently</h2>
+                    <div class="list-container">
+                        <div class="list-item tooltip-trigger" data-title="Released: Nether Grooves" data-artist="Various Overworlders" data-type="Newly Added (Track Count: 12)">
+                            <div class="list-img art-nether"></div>
+                            <div class="list-info"><div class="list-title">Cover Art: Released: Nether Grooves</div><div class="list-sub">Cover Art</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LOCAL FILES VIEW -->
+            <div id="view-local" class="service-view">
+                <h1>LOCAL FILES</h1>
+                <input type="text" class="search-bar" placeholder="Search your tracks or folders..." autocomplete="off" style="margin-bottom:10px;">
+                <div class="local-layout">
+                    <!-- Left Side: Folders and Playlists -->
+                    <div class="local-sidebar scrollable">
+                        <h2>Folders</h2>
+                        <div class="grid-container" style="grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px;">
+                            <div class="card"><div class="folder-icon">📁</div><div class="card-title" style="font-size:14px;">My Playlists</div></div>
+                            <div class="card"><div class="folder-icon">📁</div><div class="card-title" style="font-size:14px;">Chill Vibes</div></div>
+                            <div class="card"><div class="folder-icon">📁</div><div class="card-title" style="font-size:14px;">Game OSTs</div></div>
+                            <div class="card"><div class="folder-icon">📁</div><div class="card-title" style="font-size:14px;">Imported</div></div>
+                        </div>
+                        <h2>Playlists <button class="mc-btn" style="float:right; font-size:14px; padding:2px 6px;">+ New Folder</button></h2>
+                        <div class="grid-container" style="grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 10px;">
+                            <div class="card"><div class="card-img art-mc-block" style="margin-bottom:2px;"></div><div class="card-title" style="font-size:14px;">Building Jams</div></div>
+                            <div class="card"><div class="card-img art-nether" style="margin-bottom:2px;"></div><div class="card-title" style="font-size:14px;">Adventure Beats</div></div>
+                            <div class="card tooltip-trigger" data-title="Redstone Grooves" data-artist="Local" data-type="Right click options: Rename, Delete, Add to Queue"><div class="card-img art-redstone" style="margin-bottom:2px;"></div><div class="card-title" style="font-size:14px; color:#ff5555;">Redstone Grooves</div></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Right Side: Tracks List -->
+                    <div class="local-main scrollable">
+                        <div class="table-header">
+                            <div class="col-name">Track Name</div>
+                            <div class="col-artist">Artist</div>
+                            <div class="col-time">Duration</div>
+                            <div class="col-btns"></div>
+                        </div>
+                        <!-- Tracks -->
+                        <div class="table-row">
+                            <div class="col-name"><div style="display:flex; align-items:center;"><div class="list-img art-nether" style="width:24px; height:24px; margin-right:8px;"></div> Nether Synth</div></div>
+                            <div class="col-artist">C418</div>
+                            <div class="col-time">(3:15)</div>
+                            <div class="col-btns"><button class="tb-btn">►</button><button class="tb-btn">+</button><button class="tb-btn">x</button></div>
+                        </div>
+                        <div class="table-row">
+                            <div class="col-name"><div style="display:flex; align-items:center;"><div class="list-img art-3" style="width:24px; height:24px; margin-right:8px;"></div> Diamond Mine</div></div>
+                            <div class="col-artist">AntVenom</div>
+                            <div class="col-time">(4:02)</div>
+                            <div class="col-btns"><button class="tb-btn">►</button><button class="tb-btn">+</button><button class="tb-btn">x</button></div>
+                        </div>
+                        <div class="table-row" style="background-color: #444; border-left: 3px solid #fff;">
+                            <div class="col-name"><div style="display:flex; align-items:center;"><div class="list-img art-redstone" style="width:24px; height:24px; margin-right:8px;"></div> Redstone Rhythm</div></div>
+                            <div class="col-artist">Approaching Nirvana</div>
+                            <div class="col-time">(2:55)</div>
+                            <div class="col-btns"><button class="tb-btn" style="color:var(--accent);">❚❚</button><button class="tb-btn">+</button><button class="tb-btn">x</button></div>
+                        </div>
+                        <div class="table-row">
+                            <div class="col-name"><div style="display:flex; align-items:center;"><div class="list-img art-mc-block" style="width:24px; height:24px; margin-right:8px;"></div> Sweden</div></div>
+                            <div class="col-artist">C418</div>
+                            <div class="col-time">(3:35)</div>
+                            <div class="col-btns"><button class="tb-btn">►</button><button class="tb-btn">+</button><button class="tb-btn">x</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SETTINGS VIEW -->
+            <div id="view-settings" class="service-view">
+                <div class="settings-menu scrollable">
+                    <h1 style="font-size: 40px; margin-bottom: 30px;">CraftiTunes Settings</h1>
+                    <button class="mc-btn-large">Aesthetics: <span style="color:#ffff55;">Default Theme</span></button>
+                    <button class="mc-btn-large">Notifications: <span style="color:#55ff55;">ON</span></button>
+                    <button class="mc-btn-large">Hotkeys: <span style="color:#aaaaaa;">Configure...</span></button>
+                    <div style="margin-top: 20px; text-align:center; color: var(--text-sub);">
+                        <p>Local Files Path:</p>
+                        <button class="mc-btn" style="width:300px; padding:10px;">[ SELECT FOLDER ]</button>
+                        <p style="font-size:14px; margin-top:5px;">C:\Users\Player\AppData\...\.minecraft\Music\</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Playback Info (Visible on all views except settings) -->
+            <div class="bottom-bar" id="playback-bar">
+                <span id="time-current">1:15</span>
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill"></div>
+                    </div>
+                </div>
+                <span id="time-remain">-1:55</span>
+                
+                <div class="controls">
+                    <button class="mc-btn">🔀</button>
+                    <button class="mc-btn">&lt;&lt;</button>
+                    <button class="mc-btn">❚❚</button>
+                    <button class="mc-btn">&gt;&gt;</button>
+                    <button class="mc-btn">Queue</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Custom Minecraft Tooltip Container -->
+    <div id="mc-tooltip">
+        <div class="tt-title" id="tt-title">Track: Title</div>
+        <div class="tt-sub" id="tt-artist">Artist: Creator</div>
+        <div class="tt-sub" id="tt-type">Info</div>
+        <div class="tt-action">&lt;Right-Click for Options&gt;</div>
+    </div>
+
+    <script>
+        // Data configurations for dynamic UI coloring
+        const services = {
+            'spotify': { color: '#1db954', showPlayback: true },
+            'yt': { color: '#ff0000', showPlayback: true },
+            'apple': { color: '#fa243c', showPlayback: true },
+            'prime': { color: '#00a8e1', showPlayback: true },
+            'local': { color: '#ffffff', showPlayback: true },
+            'settings': { color: '#aaaaaa', showPlayback: false }
+        };
+
+        function switchService(serviceId) {
+            // Update Active Nav Item
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            const activeTab = document.getElementById('tab-' + serviceId);
+            if(activeTab) activeTab.classList.add('active');
+
+            // Hide all views, show targeted view
+            document.querySelectorAll('.service-view').forEach(el => el.classList.remove('active'));
+            document.getElementById('view-' + serviceId).classList.add('active');
+
+            // Apply specific configurations
+            const config = services[serviceId];
+            document.documentElement.style.setProperty('--accent', config.color);
+            
+            // Toggle playback bar visibility (hidden in settings)
+            const playBar = document.getElementById('playback-bar');
+            playBar.style.display = config.showPlayback ? 'flex' : 'none';
+        }
+
+        // Tooltip Logic mimicking Minecraft hover interactions
+        const tooltip = document.getElementById('mc-tooltip');
+        const ttTitle = document.getElementById('tt-title');
+        const ttArtist = document.getElementById('tt-artist');
+        const ttType = document.getElementById('tt-type');
+        const triggers = document.querySelectorAll('.tooltip-trigger');
+
+        triggers.forEach(trigger => {
+            trigger.addEventListener('mousemove', (e) => {
+                const title = trigger.getAttribute('data-title') || 'Unknown';
+                const artist = trigger.getAttribute('data-artist') || 'Unknown';
+                const type = trigger.getAttribute('data-type') || '';
+
+                ttTitle.innerText = `Title: ${title}`;
+                ttArtist.innerText = `Creator/Sub: ${artist}`;
+                ttType.innerText = `${type}`;
+
+                tooltip.style.display = 'block';
+                tooltip.style.left = (e.pageX + 15) + 'px';
+                tooltip.style.top = (e.pageY + 15) + 'px';
+            });
+
+            trigger.addEventListener('mouseleave', () => {
+                tooltip.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

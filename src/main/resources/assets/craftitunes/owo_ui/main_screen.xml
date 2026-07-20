@@ -13,8 +13,8 @@
                 <!-- Main Window -->
                 <flow-layout direction="horizontal">
                     <sizing>
-                        <horizontal method="fill">55</horizontal>
-                        <vertical method="fill">65</vertical>
+                        <horizontal method="fill">60</horizontal>
+                        <vertical method="fill">75</vertical>
                     </sizing>
                     <surface>
                         <panel dark="true"/>
@@ -24,7 +24,7 @@
                         <!-- Sidebar (Navbar) -->
                         <flow-layout direction="vertical">
                             <sizing>
-                                <horizontal method="fixed">120</horizontal>
+                                <horizontal method="fixed">80</horizontal>
                                 <vertical method="fill">100</vertical>
                             </sizing>
                             <padding>
@@ -33,56 +33,50 @@
                             <surface>
                                 <options-background/>
                             </surface>
+                            <horizontal-alignment>center</horizontal-alignment>
                             
                             <children>
                                 <label>
-                                    <text>CraftiTunes</text>
+                                    <text>CiT</text>
                                     <shadow>true</shadow>
                                     <color>#1DB954</color>
-                                </label>
-                                <label>
-                                    <text>Welcome to</text>
-                                    <shadow>true</shadow>
-                                </label>
-                                <label>
-                                    <text>CraftiTunes!</text>
-                                    <shadow>true</shadow>
-                                    <margins><bottom>10</bottom></margins>
+                                    <margins><bottom>20</bottom><top>10</top></margins>
                                 </label>
                                 
                                 <button id="tab-spotify">
-                                    <text>SPOTIFY</text>
-                                    <sizing><horizontal method="fill">100</horizontal></sizing>
+                                    <text>SPO</text>
+                                    <sizing><horizontal method="fixed">50</horizontal><vertical method="fixed">40</vertical></sizing>
                                 </button>
                                 <button id="tab-yt-music">
-                                    <text>YT MUSIC</text>
-                                    <sizing><horizontal method="fill">100</horizontal></sizing>
-                                    <margins><top>5</top></margins>
+                                    <text>YT</text>
+                                    <sizing><horizontal method="fixed">50</horizontal><vertical method="fixed">40</vertical></sizing>
+                                    <margins><top>10</top></margins>
                                 </button>
                                 <button id="tab-apple">
-                                    <text>APPLE MUSIC</text>
-                                    <sizing><horizontal method="fill">100</horizontal></sizing>
-                                    <margins><top>5</top></margins>
+                                    <text>APL</text>
+                                    <sizing><horizontal method="fixed">50</horizontal><vertical method="fixed">40</vertical></sizing>
+                                    <margins><top>10</top></margins>
                                 </button>
                                 <button id="tab-prime">
-                                    <text>AMAZON MUSIC</text>
-                                    <sizing><horizontal method="fill">100</horizontal></sizing>
-                                    <margins><top>5</top></margins>
+                                    <text>AMZ</text>
+                                    <sizing><horizontal method="fixed">50</horizontal><vertical method="fixed">40</vertical></sizing>
+                                    <margins><top>10</top></margins>
                                 </button>
                                 <button id="tab-local">
-                                    <text>LOCAL FILES</text>
-                                    <sizing><horizontal method="fill">100</horizontal></sizing>
-                                    <margins><top>5</top></margins>
+                                    <text>LOC</text>
+                                    <sizing><horizontal method="fixed">50</horizontal><vertical method="fixed">40</vertical></sizing>
+                                    <margins><top>10</top></margins>
                                 </button>
                                 
-                                <!-- Spacer to push Settings to bottom -->
+                                <!-- Spacer -->
                                 <flow-layout direction="vertical">
                                     <sizing><horizontal method="fill">100</horizontal><vertical method="fill">100</vertical></sizing>
                                 </flow-layout>
                                 
                                 <button id="tab-settings">
-                                    <text>settings</text>
-                                    <sizing><horizontal method="fill">100</horizontal></sizing>
+                                    <text>SET</text>
+                                    <sizing><horizontal method="fixed">50</horizontal><vertical method="fixed">40</vertical></sizing>
+                                    <margins><bottom>10</bottom></margins>
                                 </button>
                             </children>
                         </flow-layout>
@@ -94,116 +88,37 @@
                                 <vertical method="fill">100</vertical>
                             </sizing>
                             <padding>
-                                <all>10</all>
+                                <all>15</all>
                             </padding>
                             
                             <children>
-                                <!-- Top: Header & Search -->
-                                <label id="header-label">
-                                    <text>LOCAL FILES</text>
-                                    <shadow>true</shadow>
-                                    <margins><bottom>5</bottom></margins>
-                                </label>
+                                <!-- Top: Search -->
                                 <text-box id="search-box">
                                     <text></text>
                                     <sizing><horizontal method="fill">100</horizontal></sizing>
-                                    <margins><bottom>10</bottom></margins>
+                                    <margins><bottom>15</bottom></margins>
                                 </text-box>
                                 
-                                <!-- Split View for Middle Area -->
-                                <flow-layout direction="horizontal">
+                                <!-- Dynamic Content View -->
+                                <scroll direction="vertical">
+                                    <flow-layout direction="vertical" id="content-container">
+                                        <sizing><horizontal method="fill">100</horizontal><vertical method="content"></vertical></sizing>
+                                    </flow-layout>
                                     <sizing>
                                         <horizontal method="fill">100</horizontal>
-                                        <vertical method="fill">65</vertical>
+                                        <vertical method="fill">75</vertical>
                                     </sizing>
-                                    
-                                    <children>
-                                        <!-- Left Side: Folders & Playlists Grid -->
-                                        <scroll direction="vertical">
-                                            <flow-layout direction="vertical" id="left-sidebar">
-                                                <sizing><horizontal method="fill">100</horizontal><vertical method="content"></vertical></sizing>
-                                                <children>
-                                                    <label><text>Folders</text><margins><bottom>5</bottom></margins></label>
-                                                    <!-- Folders Placeholder Grid -->
-                                                    <flow-layout direction="horizontal">
-                                                        <sizing><horizontal method="fill">100</horizontal><vertical method="content"></vertical></sizing>
-                                                        <children>
-                                                            <button><text>My Playlists</text><sizing><horizontal method="fixed">80</horizontal></sizing><margins><right>5</right><bottom>5</bottom></margins></button>
-                                                            <button><text>Chill Vibes</text><sizing><horizontal method="fixed">80</horizontal></sizing><margins><bottom>5</bottom></margins></button>
-                                                        </children>
-                                                    </flow-layout>
-                                                    
-                                                    <label><text>Playlists</text><margins><top>10</top><bottom>5</bottom></margins></label>
-                                                    <!-- Playlists Placeholder Grid -->
-                                                    <flow-layout direction="horizontal">
-                                                        <sizing><horizontal method="fill">100</horizontal><vertical method="content"></vertical></sizing>
-                                                        <children>
-                                                            <button><text>Building Jams</text><sizing><horizontal method="fixed">80</horizontal></sizing><margins><right>5</right><bottom>5</bottom></margins></button>
-                                                            <button><text>Adventure</text><sizing><horizontal method="fixed">80</horizontal></sizing><margins><bottom>5</bottom></margins></button>
-                                                            <button><text>Redstone</text><sizing><horizontal method="fixed">80</horizontal></sizing><margins><right>5</right></margins></button>
-                                                        </children>
-                                                    </flow-layout>
-                                                </children>
-                                            </flow-layout>
-                                            
-                                            <sizing>
-                                                <horizontal method="fill">30</horizontal>
-                                                <vertical method="fill">100</vertical>
-                                            </sizing>
-                                        </scroll>
-                                        
-                                        <!-- Right Side: Track List -->
-                                        <flow-layout direction="vertical">
-                                            <sizing>
-                                                <horizontal method="fill">70</horizontal>
-                                                <vertical method="fill">100</vertical>
-                                            </sizing>
-                                            <surface><panel dark="true"/></surface>
-                                            <padding><all>5</all></padding>
-                                            
-                                            <children>
-                                                <!-- Table Header -->
-                                                <flow-layout direction="horizontal">
-                                                    <sizing><horizontal method="fill">100</horizontal><vertical method="fixed">20</vertical></sizing>
-                                                    <children>
-                                                        <label><text>Track Name</text><sizing><horizontal method="fill">45</horizontal></sizing></label>
-                                                        <label><text>Artist</text><sizing><horizontal method="fill">20</horizontal></sizing></label>
-                                                        <label><text>Duration</text><sizing><horizontal method="fill">10</horizontal></sizing></label>
-                                                    </children>
-                                                </flow-layout>
-                                                
-                                                <!-- Track List Scroll Area -->
-                                                <scroll direction="vertical">
-                                                    <flow-layout direction="vertical" id="track-list">
-                                                        <sizing>
-                                                            <horizontal method="fill">100</horizontal>
-                                                            <vertical method="content"></vertical>
-                                                        </sizing>
-                                                        <children>
-                                                            <label>
-                                                                <text>Loading tracks...</text>
-                                                            </label>
-                                                        </children>
-                                                    </flow-layout>
-                                                    <sizing>
-                                                        <horizontal method="fill">100</horizontal>
-                                                        <vertical method="fill">100</vertical>
-                                                    </sizing>
-                                                </scroll>
-                                            </children>
-                                        </flow-layout>
-                                    </children>
-                                </flow-layout>
+                                </scroll>
                                 
                                 <!-- Bottom: Playback Controls -->
                                 <flow-layout direction="horizontal">
                                     <sizing>
                                         <horizontal method="fill">100</horizontal>
-                                        <vertical method="fixed">40</vertical>
+                                        <vertical method="fixed">50</vertical>
                                     </sizing>
                                     <vertical-alignment>center</vertical-alignment>
-                                    <padding><all>5</all></padding>
-                                    <margins><top>10</top></margins>
+                                    <padding><all>10</all></padding>
+                                    <margins><top>15</top></margins>
                                     <surface><panel dark="true"/></surface>
                                     
                                     <children>
@@ -232,21 +147,21 @@
                                             <children>
                                                 <button id="btn-queue">
                                                     <text>Q</text>
-                                                    <sizing><horizontal method="fixed">20</horizontal><vertical method="fixed">20</vertical></sizing>
-                                                    <margins><right>5</right></margins>
+                                                    <sizing><horizontal method="fixed">24</horizontal><vertical method="fixed">24</vertical></sizing>
+                                                    <margins><right>8</right></margins>
                                                 </button>
                                                 <button id="btn-prev">
                                                     <text>&lt;&lt;</text>
-                                                    <sizing><horizontal method="fixed">30</horizontal><vertical method="fixed">20</vertical></sizing>
+                                                    <sizing><horizontal method="fixed">32</horizontal><vertical method="fixed">24</vertical></sizing>
                                                 </button>
                                                 <button id="btn-play-pause">
                                                     <text>||</text>
-                                                    <sizing><horizontal method="fixed">30</horizontal><vertical method="fixed">20</vertical></sizing>
+                                                    <sizing><horizontal method="fixed">32</horizontal><vertical method="fixed">24</vertical></sizing>
                                                     <margins><left>5</left><right>5</right></margins>
                                                 </button>
                                                 <button id="btn-next">
                                                     <text>&gt;&gt;</text>
-                                                    <sizing><horizontal method="fixed">30</horizontal><vertical method="fixed">20</vertical></sizing>
+                                                    <sizing><horizontal method="fixed">32</horizontal><vertical method="fixed">24</vertical></sizing>
                                                 </button>
                                             </children>
                                         </flow-layout>
