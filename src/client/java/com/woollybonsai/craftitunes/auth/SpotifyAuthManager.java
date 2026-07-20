@@ -17,6 +17,10 @@ import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.concurrent.Executors;
 import java.util.Scanner;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class SpotifyAuthManager {
 
@@ -28,6 +32,27 @@ public class SpotifyAuthManager {
     private static HttpServer server;
     
     public static String accessToken = null;
+    
+    private static final Path TOKEN_FILE = Paths.get(Minecraft.getInstance().gameDirectory.getAbsolutePath(), "config", "craftitunes_spotify_token.txt");
+
+    public static void loadToken() {
+        if (Files.exists(TOKEN_FILE)) {
+            try {
+                accessToken = Files.readString(TOKEN_FILE);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void saveToken() {
+        try {
+            Files.createDirectories(TOKEN_FILE.getParent());
+            Files.writeString(TOKEN_FILE, accessToken != null ? accessToken : "");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void startAuthFlow() {
         try {
@@ -118,6 +143,7 @@ public class SpotifyAuthManager {
                             Minecraft.getInstance().player.displayClientMessage(Component.literal("§aSpotify Linked Successfully!"), false);
                         }
                         System.out.println("Spotify Token Acquired!");
+                        saveToken();
                     }
                 }
             } else {

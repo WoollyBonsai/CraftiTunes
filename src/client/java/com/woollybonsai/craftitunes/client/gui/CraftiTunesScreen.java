@@ -128,6 +128,9 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
         }
     }
 
+    private int currentPlaylistPage = 0;
+    private java.util.List<com.woollybonsai.craftitunes.api.SpotifyModels.PlaylistItem> cachedPlaylists = null;
+
     private void loadTab(FlowLayout root, FlowLayout contentContainer, String tabName) {
         contentContainer.clearChildren();
         
@@ -194,7 +197,7 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
             
             trackList.child(Containers.horizontalFlow(Sizing.fill(100), Sizing.fixed(1)).surface(Surface.flat(0xFF444444)).margins(Insets.bottom(10)));
 
-            File musicDir = new File("/home/woolly/Work/Minecraft_Mods/Craftitunes/test_music");
+            File musicDir = new File(net.minecraft.client.Minecraft.getInstance().gameDirectory.getAbsolutePath(), "test_music");
             if (musicDir.exists() && musicDir.isDirectory()) {
                 File[] files = musicDir.listFiles((d, name) -> name.endsWith(".mp3") || name.endsWith(".wav") || name.endsWith(".ogg"));
                 if (files != null && files.length > 0) {
@@ -221,7 +224,7 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                             }
                             return false;
                         });
-                                           FlowLayout titleArea = Containers.horizontalFlow(Sizing.fill(40), Sizing.content());
+                        FlowLayout titleArea = Containers.horizontalFlow(Sizing.fill(40), Sizing.content());
                         titleArea.child(Components.texture(net.minecraft.resources.ResourceLocation.parse("craftitunes:textures/gui/music_icon.png"), 0, 0, 16, 16, 16, 16).sizing(Sizing.fixed(16)));
                         titleArea.child(Components.label(Component.literal(formatTrackName(file.getName()))).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFFFFFFF)).margins(Insets.left(5)));
                         row.child(titleArea);
@@ -272,6 +275,8 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
             contentContainer.child(Components.button(Component.literal("Notifications: ON"), b -> {}).sizing(Sizing.fill(100)).margins(Insets.bottom(10)));
             contentContainer.child(Components.button(Component.literal("Hotkeys: Configure..."), b -> {}).sizing(Sizing.fill(100)).margins(Insets.bottom(10)));
         } else if (tabName.equals("Spotify")) {
+            com.woollybonsai.craftitunes.auth.SpotifyAuthManager.loadToken();
+            
             LabelComponent header = Components.label(Component.literal(tabName.toUpperCase()));
             header.color(io.wispforest.owo.ui.core.Color.ofArgb(0xFF000000 | themeColor)).shadow(true).margins(Insets.bottom(10));
             contentContainer.child(header);
@@ -285,29 +290,17 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                 
                 contentContainer.child(Components.label(Component.literal("Once you click login, your browser will open. Agree to link your account, and the token will be fetched automatically!")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)).margins(Insets.bottom(10)));
             } else {
-                contentContainer.child(Components.label(Component.literal("Loading Playlists...")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)).id("spotify-loading"));
-                
-                com.woollybonsai.craftitunes.api.SpotifyApiClient.getUserPlaylists().thenAccept(playlists -> {
-                    net.minecraft.client.Minecraft.getInstance().execute(() -> {
-                        var loading = contentContainer.childById(io.wispforest.owo.ui.core.Component.class, "spotify-loading");
-                        if (loading != null) contentContainer.removeChild(loading);
-                        
-                        if (playlists.isEmpty()) {
-                            contentContainer.child(Components.label(Component.literal("No playlists found or failed to load.")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)));
-                            return;
-                        }
-                        
-                        FlowLayout grid = Containers.horizontalFlow(Sizing.fill(100), Sizing.content());
-                        for (var playlist : playlists) {
-                            ButtonComponent pBtn = Components.button(Component.literal(playlist.name()), b -> {
-                                loadSpotifyPlaylist(root, contentContainer, playlist.id(), playlist.name());
-                            });
-                            pBtn.sizing(Sizing.fill(48), Sizing.fixed(30)).margins(Insets.of(0, 5, 5, 0));
-                            grid.child(pBtn);
-                        }
-                        contentContainer.child(grid);
+                if (cachedPlaylists == null) {
+                    contentContainer.child(Components.label(Component.literal("Loading Playlists...")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)).id("spotify-loading"));
+                    com.woollybonsai.craftitunes.api.SpotifyApiClient.getUserPlaylists().thenAccept(playlists -> {
+                        cachedPlaylists = playlists;
+                        net.minecraft.client.Minecraft.getInstance().execute(() -> {
+                            renderSpotifyPlaylists(root, contentContainer);
+                        });
                     });
-                });
+                } else {
+                    renderSpotifyPlaylists(root, contentContainer);
+                }
             }
         } else {
             // Streaming Services (YT, Apple, etc) Mockups
@@ -332,18 +325,102 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
         }
     }
 
+    private void renderSpotifyPlaylists(FlowLayout root, FlowLayout contentContainer) {
+        contentContainer.clearChildren();
+        
+        LabelComponent header = Components.label(Component.literal("SPOTIFY"));
+        header.color(io.wispforest.owo.ui.core.Color.ofArgb(0xFF1DB954)).shadow(true).margins(Insets.bottom(10));
+        contentContainer.child(header);
+        
+        if (cachedPlaylists == null || cachedPlaylists.isEmpty()) {
+            contentContainer.child(Components.label(Component.literal("No playlists found or failed to load.")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)));
+            return;
+        }
+
+        // Pagination Logic
+        int itemsPerPage = 8;
+        int maxPages = (int) Math.ceil((double) cachedPlaylists.size() / itemsPerPage);
+        if (currentPlaylistPage >= maxPages) currentPlaylistPage = maxPages - 1;
+        if (currentPlaylistPage < 0) currentPlaylistPage = 0;
+        
+        int start = currentPlaylistPage * itemsPerPage;
+        int end = Math.min(start + itemsPerPage, cachedPlaylists.size());
+        
+        FlowLayout grid = Containers.horizontalFlow(Sizing.fill(100), Sizing.content());
+        for (int i = start; i < end; i++) {
+            var playlist = cachedPlaylists.get(i);
+            String pName = playlist.name() != null ? playlist.name() : "Unknown";
+            ButtonComponent pBtn = Components.button(Component.literal(pName), b -> {
+                loadSpotifyPlaylist(root, contentContainer, playlist.id(), pName);
+            });
+            pBtn.sizing(Sizing.fill(48), Sizing.fixed(30)).margins(Insets.of(0, 5, 5, 0));
+            grid.child(pBtn);
+        }
+        contentContainer.child(grid);
+        
+        // Paginator controls
+        if (maxPages > 1) {
+            FlowLayout pagination = Containers.horizontalFlow(Sizing.fill(100), Sizing.fixed(30));
+            pagination.horizontalAlignment(io.wispforest.owo.ui.core.HorizontalAlignment.CENTER);
+            pagination.verticalAlignment(io.wispforest.owo.ui.core.VerticalAlignment.CENTER);
+            pagination.margins(Insets.top(10));
+            
+            var prev = Components.button(Component.literal("<"), b -> {
+                if (currentPlaylistPage > 0) {
+                    currentPlaylistPage--;
+                    renderSpotifyPlaylists(root, contentContainer);
+                }
+            }).sizing(Sizing.fixed(30), Sizing.fixed(20));
+            
+            LabelComponent pageLbl = Components.label(Component.literal("Page " + (currentPlaylistPage + 1) + " of " + maxPages));
+            pageLbl.margins(Insets.horizontal(10));
+            
+            var next = Components.button(Component.literal(">"), b -> {
+                if (currentPlaylistPage < maxPages - 1) {
+                    currentPlaylistPage++;
+                    renderSpotifyPlaylists(root, contentContainer);
+                }
+            }).sizing(Sizing.fixed(30), Sizing.fixed(20));
+            
+            pagination.child(prev).child(pageLbl).child(next);
+            contentContainer.child(pagination);
+        }
+    }
+
     private void loadSpotifyPlaylist(FlowLayout root, FlowLayout contentContainer, String playlistId, String playlistName) {
         contentContainer.clearChildren();
         
-        ButtonComponent backBtn = Components.button(Component.literal("< Back to Playlists"), b -> {
-            loadTab(root, contentContainer, "Spotify");
+        ButtonComponent backBtn = Components.button(Component.literal("< Back"), b -> {
+            renderSpotifyPlaylists(root, contentContainer);
         });
-        backBtn.sizing(Sizing.fixed(150), Sizing.fixed(20)).margins(Insets.bottom(10));
+        backBtn.sizing(Sizing.fixed(60), Sizing.fixed(20)).margins(Insets.bottom(5));
         contentContainer.child(backBtn);
         
-        LabelComponent header = Components.label(Component.literal(playlistName));
-        header.color(io.wispforest.owo.ui.core.Color.ofArgb(0xFF1DB954)).shadow(true).margins(Insets.bottom(10));
-        contentContainer.child(header);
+        // Playlist Banner UI
+        FlowLayout banner = Containers.horizontalFlow(Sizing.fill(100), Sizing.content());
+        banner.surface(Surface.flat(0xFF1DB954));
+        banner.padding(Insets.of(10)).margins(Insets.bottom(10));
+        banner.verticalAlignment(io.wispforest.owo.ui.core.VerticalAlignment.CENTER);
+        
+        FlowLayout bannerText = Containers.verticalFlow(Sizing.fill(70), Sizing.content());
+        LabelComponent title = Components.label(Component.literal(playlistName != null ? playlistName : "Unknown Playlist"));
+        title.color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFFFFFFF)).shadow(true).margins(Insets.bottom(5));
+        bannerText.child(title);
+        bannerText.child(Components.label(Component.literal("Spotify Playlist")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFDDDDDD)));
+        banner.child(bannerText);
+        
+        ButtonComponent playBtnBanner = Components.button(Component.literal("PLAY"), b -> {});
+        playBtnBanner.sizing(Sizing.fixed(50), Sizing.fixed(20));
+        banner.child(playBtnBanner);
+        contentContainer.child(banner);
+        
+        // Track list header
+        FlowLayout tableHeader = Containers.horizontalFlow(Sizing.fill(100), Sizing.fixed(20));
+        tableHeader.surface(Surface.flat(0xFF2B2B2B));
+        tableHeader.child(Components.label(Component.literal("Track")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)).sizing(Sizing.fill(50), Sizing.content()));
+        tableHeader.child(Components.label(Component.literal("Artist")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)).sizing(Sizing.fill(50), Sizing.content()));
+        contentContainer.child(tableHeader);
+        contentContainer.child(Containers.horizontalFlow(Sizing.fill(100), Sizing.fixed(1)).surface(Surface.flat(0xFF444444)).margins(Insets.bottom(5)));
         
         contentContainer.child(Components.label(Component.literal("Loading Tracks...")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)).id("spotify-loading-tracks"));
         
@@ -362,9 +439,12 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                     var track = trackItem.track();
                     if (track == null) continue;
                     
-                    FlowLayout row = Containers.horizontalFlow(Sizing.fill(100), Sizing.fixed(30));
+                    String trackName = track.name() != null ? track.name() : "Unknown Track";
+                    String trackArtists = track.getArtistNames() != null ? track.getArtistNames() : "Unknown Artist";
+                    
+                    FlowLayout row = Containers.horizontalFlow(Sizing.fill(100), Sizing.fixed(24));
                     row.verticalAlignment(io.wispforest.owo.ui.core.VerticalAlignment.CENTER);
-                    row.padding(Insets.of(5));
+                    row.padding(Insets.horizontal(5));
                     row.surface(Surface.flat(0xFF333333));
                     row.margins(Insets.bottom(2));
                     
@@ -374,20 +454,20 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                     row.mouseDown().subscribe((mouseX, mouseY, button) -> {
                         if (button == 0) {
                             if (net.minecraft.client.Minecraft.getInstance().player != null) {
-                                net.minecraft.client.Minecraft.getInstance().player.displayClientMessage(Component.literal("§eSpotify playback (via YT) coming soon! §7Selected: " + track.name()), false);
+                                net.minecraft.client.Minecraft.getInstance().player.displayClientMessage(Component.literal("§eSpotify playback (via YT) coming soon! §7Selected: " + trackName), false);
                             }
                             return true;
                         }
                         return false;
                     });
                     
-                    LabelComponent titleLbl = Components.label(Component.literal(track.name()));
-                    titleLbl.sizing(Sizing.fill(40), Sizing.content()).margins(Insets.left(5));
+                    LabelComponent titleLbl = Components.label(Component.literal(trackName));
+                    titleLbl.sizing(Sizing.fill(50), Sizing.content());
                     row.child(titleLbl);
                     
-                    LabelComponent artistLbl = Components.label(Component.literal(track.getArtistNames()));
+                    LabelComponent artistLbl = Components.label(Component.literal(trackArtists));
                     artistLbl.color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA));
-                    artistLbl.sizing(Sizing.fill(40), Sizing.content());
+                    artistLbl.sizing(Sizing.fill(50), Sizing.content());
                     row.child(artistLbl);
                     
                     contentContainer.child(row);
