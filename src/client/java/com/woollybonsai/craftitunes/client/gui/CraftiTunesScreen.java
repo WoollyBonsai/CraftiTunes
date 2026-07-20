@@ -448,7 +448,7 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                 FlowLayout tracksList = Containers.verticalFlow(Sizing.fill(100), Sizing.content());
                 
                 for (var trackItem : tracks) {
-                    var track = trackItem.track();
+                    var track = trackItem.item();
                     if (track == null) {
                         nullTracks++;
                         continue;

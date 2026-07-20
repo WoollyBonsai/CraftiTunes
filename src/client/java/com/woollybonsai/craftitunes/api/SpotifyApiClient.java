@@ -59,7 +59,7 @@ public class SpotifyApiClient {
                     if (response.statusCode() == 200) {
                         SpotifyModels.PlaylistTracksResponse parsed = gson.fromJson(response.body(), SpotifyModels.PlaylistTracksResponse.class);
                         if (parsed == null || parsed.items() == null || parsed.items().isEmpty()) {
-                            System.out.println("Warning: Parsed tracks are empty. Raw JSON: " + response.body());
+                            System.out.println("Warning: Parsed tracks are empty.");
                         }
                         return parsed != null && parsed.items() != null ? parsed.items() : Collections.<SpotifyModels.TrackItem>emptyList();
                     } else {

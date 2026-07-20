@@ -16,7 +16,7 @@ public class SpotifyModels {
 
     public record PlaylistTracksResponse(List<TrackItem> items) {}
 
-    public record TrackItem(Track track) {}
+    public record TrackItem(Track item) {}
 
     public record Track(String id, String name, List<Artist> artists) {
         public String getArtistNames() {
