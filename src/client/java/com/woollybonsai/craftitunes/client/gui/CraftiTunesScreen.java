@@ -113,6 +113,15 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
     private void setupTabs(FlowLayout rootComponent, FlowLayout contentContainer) {
         String[] tabs = {"tab-local", "tab-spotify", "tab-yt-music", "tab-apple", "tab-prime", "tab-settings"};
         String[] names = {"Local Files", "Spotify", "YT Music", "Apple Music", "Prime Music", "Settings"};
+        
+        for (String tabId : new String[]{"tab-spotify", "tab-yt-music", "tab-apple", "tab-prime", "tab-local", "tab-settings"}) {
+            FlowLayout tab = rootComponent.childById(FlowLayout.class, tabId);
+            if (tab != null) {
+                tab.mouseEnter().subscribe(() -> tab.surface(Surface.flat(0xFF444444)));
+                tab.mouseLeave().subscribe(() -> tab.surface(Surface.BLANK));
+            }
+        }
+        
         for (int i = 0; i < tabs.length; i++) {
             final String tabTitle = names[i];
             FlowLayout tabBtn = rootComponent.childById(FlowLayout.class, tabs[i]);
@@ -225,7 +234,7 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                             return false;
                         });
                         FlowLayout titleArea = Containers.horizontalFlow(Sizing.fill(40), Sizing.content());
-                        titleArea.child(Components.texture(net.minecraft.resources.ResourceLocation.parse("craftitunes:textures/gui/music_icon.png"), 0, 0, 16, 16, 16, 16).sizing(Sizing.fixed(16)));
+                        titleArea.child(Components.label(Component.literal("🎵 ")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFF1DB954)));
                         titleArea.child(Components.label(Component.literal(formatTrackName(file.getName()))).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFFFFFFF)).margins(Insets.left(5)));
                         row.child(titleArea);
                         
@@ -257,7 +266,7 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                         trackList.child(row);
                     }
                 } else {
-                    trackList.child(Components.label(Component.literal("No tracks found.")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)));
+                    trackList.child(Components.label(Component.literal("No local music found.")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)).margins(Insets.top(10)));
                 }
             } else {
                 trackList.child(Components.label(Component.literal("test_music folder not found.")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)));
@@ -436,6 +445,8 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                 }
                 
                 int nullTracks = 0;
+                FlowLayout tracksList = Containers.verticalFlow(Sizing.fill(100), Sizing.content());
+                
                 for (var trackItem : tracks) {
                     var track = trackItem.track();
                     if (track == null) {
@@ -473,8 +484,9 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                     artistBox.child(Components.label(Component.literal(trackArtists)).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)).sizing(Sizing.content(), Sizing.content()));
                     row.child(artistBox);
                     
-                    contentContainer.child(row);
+                    tracksList.child(row);
                 }
+                contentContainer.child(tracksList);
                 System.out.println("Skipped " + nullTracks + " null tracks.");
             });
         });
