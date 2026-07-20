@@ -13,8 +13,8 @@
                 <!-- Main Window -->
                 <flow-layout direction="horizontal">
                     <sizing>
-                        <horizontal method="fill">60</horizontal>
-                        <vertical method="fill">75</vertical>
+                        <horizontal method="fill">85</horizontal>
+                        <vertical method="fill">85</vertical>
                     </sizing>
                     <surface>
                         <flat>#FF2B2B2B</flat>
@@ -127,16 +127,13 @@
                                 <horizontal method="fill">100</horizontal>
                                 <vertical method="fill">100</vertical>
                             </sizing>
-                            <padding>
-                                <all>15</all>
-                            </padding>
                             
                             <children>
                                 <!-- Top: Search -->
                                 <text-box id="search-box">
                                     <text></text>
-                                    <sizing><horizontal method="fill">100</horizontal></sizing>
-                                    <margins><bottom>15</bottom></margins>
+                                    <sizing><horizontal method="fill">96</horizontal></sizing>
+                                    <margins><bottom>15</bottom><top>15</top><left>2</left></margins>
                                 </text-box>
                                 
                                 <!-- Dynamic Content View -->
@@ -145,9 +142,10 @@
                                         <sizing><horizontal method="fill">100</horizontal><vertical method="content"></vertical></sizing>
                                     </flow-layout>
                                     <sizing>
-                                        <horizontal method="fill">100</horizontal>
+                                        <horizontal method="fill">98</horizontal>
                                         <vertical method="fill">75</vertical>
                                     </sizing>
+                                    <margins><left>1</left></margins>
                                 </scroll>
                                 
                                 <!-- Bottom: Playback Controls -->
@@ -158,7 +156,6 @@
                                     </sizing>
                                     <vertical-alignment>center</vertical-alignment>
                                     <padding><all>10</all></padding>
-                                    <margins><top>15</top></margins>
                                     <surface><flat>#FF1E1E1E</flat></surface>
                                     
                                     <children>

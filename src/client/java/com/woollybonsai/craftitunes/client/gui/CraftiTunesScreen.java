@@ -177,21 +177,21 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
             FlowLayout trackList = Containers.verticalFlow(Sizing.fill(68), Sizing.content());
             trackList.padding(Insets.left(5));
             
-            FlowLayout tableHeader = Containers.horizontalFlow(Sizing.fill(100), Sizing.fixed(20));
+            FlowLayout tableHeader = Containers.horizontalFlow(Sizing.fill(98), Sizing.fixed(20));
             tableHeader.surface(Surface.flat(0xFF2B2B2B));
-            tableHeader.child(Components.label(Component.literal("Track Name")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)).sizing(Sizing.fill(45), Sizing.content()));
+            tableHeader.child(Components.label(Component.literal("Track Name")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)).sizing(Sizing.fill(40), Sizing.content()));
             tableHeader.child(Components.label(Component.literal("Artist")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)).sizing(Sizing.fill(20), Sizing.content()));
             tableHeader.child(Components.label(Component.literal("Duration")).color(io.wispforest.owo.ui.core.Color.ofArgb(0xFFAAAAAA)).sizing(Sizing.fill(15), Sizing.content()));
             trackList.child(tableHeader);
             
-            trackList.child(Containers.horizontalFlow(Sizing.fill(100), Sizing.fixed(1)).surface(Surface.flat(0xFF444444)).margins(Insets.bottom(10)));
+            trackList.child(Containers.horizontalFlow(Sizing.fill(98), Sizing.fixed(1)).surface(Surface.flat(0xFF444444)).margins(Insets.bottom(10)));
 
             File musicDir = new File("/home/woolly/Work/Minecraft_Mods/Craftitunes/test_music");
             if (musicDir.exists() && musicDir.isDirectory()) {
                 File[] files = musicDir.listFiles((d, name) -> name.endsWith(".mp3") || name.endsWith(".wav") || name.endsWith(".ogg"));
                 if (files != null && files.length > 0) {
                     for (File file : files) {
-                        FlowLayout row = Containers.horizontalFlow(Sizing.fill(100), Sizing.fixed(30));
+                        FlowLayout row = Containers.horizontalFlow(Sizing.fill(98), Sizing.fixed(30));
                         row.verticalAlignment(io.wispforest.owo.ui.core.VerticalAlignment.CENTER);
                         row.padding(Insets.of(5));
                         row.surface(Surface.flat(0xFF333333));
@@ -283,15 +283,15 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
             
             contentContainer.child(Components.label(Component.literal("Quick Access")).margins(Insets.bottom(5)));
             FlowLayout quickGrid = Containers.horizontalFlow(Sizing.fill(100), Sizing.content());
-            quickGrid.child(Components.button(Component.literal("Liked Songs"), b -> {}).sizing(Sizing.fill(32), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
-            quickGrid.child(Components.button(Component.literal("Daily Mix 1"), b -> {}).sizing(Sizing.fill(32), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
-            quickGrid.child(Components.button(Component.literal("LoFi Beats"), b -> {}).sizing(Sizing.fill(32), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
+            quickGrid.child(Components.button(Component.literal("Liked Songs"), b -> {}).sizing(Sizing.fill(30), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
+            quickGrid.child(Components.button(Component.literal("Daily Mix 1"), b -> {}).sizing(Sizing.fill(30), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
+            quickGrid.child(Components.button(Component.literal("LoFi Beats"), b -> {}).sizing(Sizing.fill(30), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
             contentContainer.child(quickGrid);
             
             contentContainer.child(Components.label(Component.literal("Recommendations")).margins(Insets.top(15).bottom(5)));
             FlowLayout recGrid = Containers.horizontalFlow(Sizing.fill(100), Sizing.content());
-            recGrid.child(Components.button(Component.literal("Discover Weekly"), b -> {}).sizing(Sizing.fill(48), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
-            recGrid.child(Components.button(Component.literal("New Releases"), b -> {}).sizing(Sizing.fill(48), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
+            recGrid.child(Components.button(Component.literal("Discover Weekly"), b -> {}).sizing(Sizing.fill(46), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
+            recGrid.child(Components.button(Component.literal("New Releases"), b -> {}).sizing(Sizing.fill(46), Sizing.fixed(40)).margins(Insets.of(0, 5, 0, 5)));
             contentContainer.child(recGrid);
         }
     }
