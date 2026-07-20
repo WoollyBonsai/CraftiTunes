@@ -349,6 +349,7 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
         
         com.woollybonsai.craftitunes.api.SpotifyApiClient.getPlaylistTracks(playlistId).thenAccept(tracks -> {
             net.minecraft.client.Minecraft.getInstance().execute(() -> {
+                System.out.println("Fetched " + tracks.size() + " tracks for playlist " + playlistId);
                 var loading = contentContainer.childById(io.wispforest.owo.ui.core.Component.class, "spotify-loading-tracks");
                 if (loading != null) contentContainer.removeChild(loading);
                 

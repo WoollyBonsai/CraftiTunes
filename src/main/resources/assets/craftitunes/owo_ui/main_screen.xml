@@ -10,31 +10,19 @@
             <vertical-alignment>center</vertical-alignment>
 
             <children>
-                <scroll direction="horizontal">
-
-
-                    <flow-layout direction="vertical" id="main-window-wrapper">
-                        <sizing>
-                            <horizontal method="content"></horizontal>
-                            <vertical method="fill">100</vertical>
-                        </sizing>
-                        <horizontal-alignment>center</horizontal-alignment>
-                        <vertical-alignment>center</vertical-alignment>
-                        
-                        <children>
-                            <!-- Main Window -->
-                            <flow-layout direction="horizontal">
-                                <sizing>
-                                    <horizontal method="fixed">550</horizontal>
-                                    <vertical method="fixed">320</vertical>
-                                </sizing>
-                                <surface>
-                                    <flat>#FF2B2B2B</flat>
-                                </surface>
-                                
-                                <children>
-                                    <!-- Sidebar (Navbar) -->
-                                    <flow-layout direction="vertical">
+                <!-- Main Window -->
+                <flow-layout direction="horizontal">
+                    <sizing>
+                        <horizontal method="fill">60</horizontal>
+                        <vertical method="fill">75</vertical>
+                    </sizing>
+                    <surface>
+                        <flat>#FF2B2B2B</flat>
+                    </surface>
+                    
+                    <children>
+                        <!-- Sidebar (Navbar) -->
+                        <flow-layout direction="vertical">
                             <sizing>
                                 <horizontal method="fixed">80</horizontal>
                                 <vertical method="fill">100</vertical>
@@ -148,7 +136,7 @@
                                 <text-box id="search-box">
                                     <text></text>
                                     <sizing><horizontal method="fill">85</horizontal></sizing>
-                                    <margins><bottom>15</bottom><right>15</right></margins>
+                                    <margins><bottom>15</bottom></margins>
                                 </text-box>
                                 
                                 <!-- Dynamic Content View -->
@@ -223,15 +211,6 @@
                         </flow-layout>
                     </children>
                 </flow-layout>
-                
-                        </children>
-                    </flow-layout>
-                    <sizing>
-                        <horizontal method="fill">100</horizontal>
-                        <vertical method="fill">100</vertical>
-                    </sizing>
-                </scroll>
-
             </children>
         </flow-layout>
     </components>
