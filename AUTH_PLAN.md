@@ -9,9 +9,9 @@ Spotify provides a robust Web API and explicitly supports client-side applicatio
 
 ### Planned Flow (Direct Login via PKCE):
 1. **No Client Secret:** We will register a Spotify Developer Application and obtain a `Client ID`. We do not need a `Client Secret` for PKCE.
-2. **Local Web Server:** When the user clicks "Login to Spotify" in-game, the mod will temporarily spin up a lightweight Java HTTP server (e.g., `com.sun.net.httpserver.HttpServer`) listening on `http://localhost:8888/callback`.
+2. **Local Web Server:** When the user clicks "Login to Spotify" in-game, the mod will temporarily spin up a lightweight Java HTTP server (e.g., `com.sun.net.httpserver.HttpServer`) listening on `http://127.0.0.1:8888/callback`.
 3. **Browser Redirect:** The mod will use Java's `Desktop.getDesktop().browse()` to open the user's default web browser to the Spotify Authorization URL, passing our `Client ID` and a generated code challenge.
-4. **Callback Intercept:** After the user approves the login in their browser, Spotify redirects them to `http://localhost:8888/callback?code=XYZ`.
+4. **Callback Intercept:** After the user approves the login in their browser, Spotify redirects them to `http://127.0.0.1:8888/callback?code=XYZ`.
 5. **Token Exchange:** The local HTTP server intercepts the `code`, shuts itself down, and the mod exchanges the code + code verifier for an `access_token` and `refresh_token` directly with Spotify.
 6. **Token Storage:** The tokens will be encrypted and saved locally in a `.craftitunes_secrets` file in the Minecraft directory.
 
