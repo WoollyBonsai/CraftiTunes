@@ -9,6 +9,7 @@ import io.wispforest.owo.ui.container.FlowLayout;
 import io.wispforest.owo.ui.core.Surface;
 import io.wispforest.owo.ui.core.Sizing;
 import io.wispforest.owo.ui.core.Insets;
+import io.wispforest.owo.ui.container.Containers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -37,10 +38,10 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                 AudioPlayer player = AudioEngine.getPlayer();
                 if (player.getPlayingTrack() == null) {
                     AudioEngine.loadAndPlay("/home/woolly/Work/Minecraft_Mods/Craftitunes/test_music/sample_beat.mp3");
-                    button.setMessage(Component.literal("Pause"));
+                    button.setMessage(Component.literal("||"));
                 } else {
                     player.setPaused(!player.isPaused());
-                    button.setMessage(Component.literal(player.isPaused() ? "Play" : "Pause"));
+                    button.setMessage(Component.literal(player.isPaused() ? ">" : "||"));
                 }
             });
         }
@@ -121,27 +122,48 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                 File[] files = musicDir.listFiles((d, name) -> name.endsWith(".mp3") || name.endsWith(".wav"));
                 if (files != null && files.length > 0) {
                     for (File file : files) {
-                        ButtonComponent trackBtn = Components.button(
-                            Component.literal(formatTrackName(file.getName()) + " (R-Click to Queue)"), 
-                            button -> {
-                                AudioEngine.getScheduler().clearQueue();
-                                AudioEngine.getPlayer().stopTrack();
-                                AudioEngine.loadAndPlay(file.getAbsolutePath());
-                            }
-                        );
+                        FlowLayout row = Containers.horizontalFlow(Sizing.fill(100), Sizing.fixed(22));
+                        row.margins(Insets.bottom(2));
                         
-                        trackBtn.mouseDown().subscribe((mouseX, mouseY, button) -> {
+                        // Right-click logic on the row background
+                        row.mouseDown().subscribe((mouseX, mouseY, button) -> {
                             if (button == 1) { // Right click
                                 AudioEngine.loadAndPlay(file.getAbsolutePath());
                                 return true;
                             }
                             return false;
                         });
-
-                        trackBtn.sizing(Sizing.fill(100), Sizing.fixed(20));
-                        trackBtn.margins(Insets.bottom(2));
-                        trackBtn.renderer(ButtonComponent.Renderer.flat(0x00000000, 0x331DB954, 0x00000000));
-                        trackList.child(trackBtn);
+                        
+                        LabelComponent nameLbl = Components.label(Component.literal(formatTrackName(file.getName())));
+                        nameLbl.sizing(Sizing.fill(60), Sizing.content());
+                        row.child(nameLbl);
+                        
+                        LabelComponent artistLbl = Components.label(Component.literal("Unknown Artist"));
+                        artistLbl.sizing(Sizing.fill(20), Sizing.content());
+                        row.child(artistLbl);
+                        
+                        LabelComponent durLbl = Components.label(Component.literal("--:--"));
+                        durLbl.sizing(Sizing.fill(10), Sizing.content());
+                        row.child(durLbl);
+                        
+                        ButtonComponent rowPlayBtn = Components.button(Component.literal(">"), btn -> {
+                            AudioEngine.getScheduler().clearQueue();
+                            AudioEngine.getPlayer().stopTrack();
+                            AudioEngine.loadAndPlay(file.getAbsolutePath());
+                        });
+                        rowPlayBtn.sizing(Sizing.fixed(20), Sizing.fixed(20));
+                        rowPlayBtn.margins(Insets.right(2));
+                        
+                        ButtonComponent rowQueueBtn = Components.button(Component.literal("+"), btn -> {
+                            AudioEngine.loadAndPlay(file.getAbsolutePath());
+                        });
+                        rowQueueBtn.sizing(Sizing.fixed(20), Sizing.fixed(20));
+                        rowQueueBtn.margins(Insets.right(2));
+                        
+                        row.child(rowPlayBtn);
+                        row.child(rowQueueBtn);
+                        
+                        trackList.child(row);
                     }
                 } else {
                     trackList.child(Components.label(Component.literal("No tracks found.")));
@@ -160,7 +182,7 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
     public void tick() {
         super.tick();
         if (this.uiAdapter != null && this.uiAdapter.rootComponent != null) {
-            LabelComponent label = this.uiAdapter.rootComponent.childById(LabelComponent.class, "lbl-now-playing");
+            LabelComponent label = this.uiAdapter.rootComponent.childById(LabelComponent.class, "now-playing-label");
             ButtonComponent playBtn = this.uiAdapter.rootComponent.childById(ButtonComponent.class, "btn-play-pause");
             
             if (label != null) {
@@ -179,7 +201,7 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                     
                     label.text(Component.literal("Now Playing: " + title));
                     if (playBtn != null) {
-                        playBtn.setMessage(Component.literal(player.isPaused() ? "Play" : "Pause"));
+                        playBtn.setMessage(Component.literal(player.isPaused() ? ">" : "||"));
                     }
                     
                     SliderComponent slider = this.uiAdapter.rootComponent.childById(SliderComponent.class, "track-slider");
@@ -194,7 +216,7 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                 } else {
                     label.text(Component.literal("Now Playing: None"));
                     if (playBtn != null) {
-                        playBtn.setMessage(Component.literal("Play"));
+                        playBtn.setMessage(Component.literal(">"));
                     }
                     SliderComponent slider = this.uiAdapter.rootComponent.childById(SliderComponent.class, "track-slider");
                     if (slider != null) {

@@ -13,18 +13,18 @@
                 <!-- Main Window -->
                 <flow-layout direction="horizontal">
                     <sizing>
-                        <horizontal method="fixed">450</horizontal>
-                        <vertical method="fixed">250</vertical>
+                        <horizontal method="fill">95</horizontal>
+                        <vertical method="fill">90</vertical>
                     </sizing>
                     <surface>
                         <panel dark="true"/>
                     </surface>
                     
                     <children>
-                        <!-- Sidebar -->
+                        <!-- Sidebar (Navbar) -->
                         <flow-layout direction="vertical">
                             <sizing>
-                                <horizontal method="fixed">100</horizontal>
+                                <horizontal method="fixed">120</horizontal>
                                 <vertical method="fill">100</vertical>
                             </sizing>
                             <padding>
@@ -39,26 +39,49 @@
                                     <text>CraftiTunes</text>
                                     <shadow>true</shadow>
                                     <color>#1DB954</color>
+                                </label>
+                                <label>
+                                    <text>Welcome to</text>
+                                    <shadow>true</shadow>
+                                </label>
+                                <label>
+                                    <text>CraftiTunes!</text>
+                                    <shadow>true</shadow>
                                     <margins><bottom>10</bottom></margins>
                                 </label>
-                                <button id="tab-local">
-                                    <text>Local Files</text>
-                                    <sizing><horizontal method="fill">100</horizontal></sizing>
-                                </button>
+                                
                                 <button id="tab-spotify">
-                                    <text>Spotify</text>
+                                    <text>SPOTIFY</text>
                                     <sizing><horizontal method="fill">100</horizontal></sizing>
                                 </button>
                                 <button id="tab-yt-music">
-                                    <text>YT Music</text>
+                                    <text>YT MUSIC</text>
                                     <sizing><horizontal method="fill">100</horizontal></sizing>
+                                    <margins><top>5</top></margins>
                                 </button>
                                 <button id="tab-apple">
-                                    <text>Apple Music</text>
+                                    <text>APPLE MUSIC</text>
                                     <sizing><horizontal method="fill">100</horizontal></sizing>
+                                    <margins><top>5</top></margins>
                                 </button>
                                 <button id="tab-prime">
-                                    <text>Prime Music</text>
+                                    <text>AMAZON MUSIC</text>
+                                    <sizing><horizontal method="fill">100</horizontal></sizing>
+                                    <margins><top>5</top></margins>
+                                </button>
+                                <button id="tab-local">
+                                    <text>LOCAL FILES</text>
+                                    <sizing><horizontal method="fill">100</horizontal></sizing>
+                                    <margins><top>5</top></margins>
+                                </button>
+                                
+                                <!-- Spacer to push Settings to bottom -->
+                                <flow-layout direction="vertical">
+                                    <sizing><horizontal method="fill">100</horizontal><vertical method="fill">100</vertical></sizing>
+                                </flow-layout>
+                                
+                                <button id="tab-settings">
+                                    <text>settings</text>
                                     <sizing><horizontal method="fill">100</horizontal></sizing>
                                 </button>
                             </children>
@@ -75,36 +98,103 @@
                             </padding>
                             
                             <children>
-                                <!-- Top: Header -->
+                                <!-- Top: Header & Search -->
                                 <label id="header-label">
                                     <text>LOCAL FILES</text>
                                     <shadow>true</shadow>
-                                    <margins><bottom>10</bottom></margins>
+                                    <margins><bottom>5</bottom></margins>
                                 </label>
+                                <text-box id="search-box">
+                                    <text></text>
+                                    <sizing><horizontal method="fill">100</horizontal></sizing>
+                                    <margins><bottom>10</bottom></margins>
+                                </text-box>
                                 
-                                <!-- Middle: Track List -->
-                                <scroll direction="vertical">
-                                    <flow-layout direction="vertical" id="track-list">
-                                        <sizing>
-                                            <horizontal method="fill">100</horizontal>
-                                            <vertical method="content"></vertical>
-                                        </sizing>
-                                        <children>
-                                            <label>
-                                                <text>Loading tracks...</text>
-                                            </label>
-                                        </children>
-                                    </flow-layout>
-                                    
+                                <!-- Split View for Middle Area -->
+                                <flow-layout direction="horizontal">
                                     <sizing>
                                         <horizontal method="fill">100</horizontal>
-                                        <vertical method="fixed">150</vertical>
+                                        <vertical method="fill">100</vertical>
                                     </sizing>
-                                    <margins>
-                                        <top>5</top>
-                                        <bottom>5</bottom>
-                                    </margins>
-                                </scroll>
+                                    
+                                    <children>
+                                        <!-- Left Side: Folders & Playlists Grid (Placeholder styling) -->
+                                        <scroll direction="vertical">
+                                            <sizing>
+                                                <horizontal method="fixed">180</horizontal>
+                                                <vertical method="fill">100</vertical>
+                                            </sizing>
+                                            <margins><right>10</right></margins>
+                                            
+                                            <flow-layout direction="vertical">
+                                                <sizing><horizontal method="fill">100</horizontal><vertical method="content"></vertical></sizing>
+                                                <children>
+                                                    <label><text>Folders</text><margins><bottom>5</bottom></margins></label>
+                                                    <!-- Folders Placeholder Grid -->
+                                                    <flow-layout direction="horizontal">
+                                                        <sizing><horizontal method="fill">100</horizontal><vertical method="content"></vertical></sizing>
+                                                        <children>
+                                                            <button><text>My Playlists</text><sizing><horizontal method="fixed">80</horizontal></sizing><margins><right>5</right><bottom>5</bottom></margins></button>
+                                                            <button><text>Chill Vibes</text><sizing><horizontal method="fixed">80</horizontal></sizing><margins><bottom>5</bottom></margins></button>
+                                                        </children>
+                                                    </flow-layout>
+                                                    
+                                                    <label><text>Playlists</text><margins><top>10</top><bottom>5</bottom></margins></label>
+                                                    <!-- Playlists Placeholder Grid -->
+                                                    <flow-layout direction="horizontal">
+                                                        <sizing><horizontal method="fill">100</horizontal><vertical method="content"></vertical></sizing>
+                                                        <children>
+                                                            <button><text>Building Jams</text><sizing><horizontal method="fixed">80</horizontal></sizing><margins><right>5</right><bottom>5</bottom></margins></button>
+                                                            <button><text>Adventure</text><sizing><horizontal method="fixed">80</horizontal></sizing><margins><bottom>5</bottom></margins></button>
+                                                            <button><text>Redstone</text><sizing><horizontal method="fixed">80</horizontal></sizing><margins><right>5</right></margins></button>
+                                                        </children>
+                                                    </flow-layout>
+                                                </children>
+                                            </flow-layout>
+                                        </scroll>
+                                        
+                                        <!-- Right Side: Track List -->
+                                        <flow-layout direction="vertical">
+                                            <sizing>
+                                                <horizontal method="fill">100</horizontal>
+                                                <vertical method="fill">100</vertical>
+                                            </sizing>
+                                            <surface><panel dark="true"/></surface>
+                                            <padding><all>5</all></padding>
+                                            
+                                            <children>
+                                                <!-- Table Header -->
+                                                <flow-layout direction="horizontal">
+                                                    <sizing><horizontal method="fill">100</horizontal><vertical method="fixed">20</vertical></sizing>
+                                                    <children>
+                                                        <label><text>Track Name</text><sizing><horizontal method="fill">60</horizontal></sizing></label>
+                                                        <label><text>Artist</text><sizing><horizontal method="fill">20</horizontal></sizing></label>
+                                                        <label><text>Duration</text><sizing><horizontal method="fill">20</horizontal></sizing></label>
+                                                    </children>
+                                                </flow-layout>
+                                                
+                                                <!-- Track List Scroll Area -->
+                                                <scroll direction="vertical">
+                                                    <sizing>
+                                                        <horizontal method="fill">100</horizontal>
+                                                        <vertical method="fill">100</vertical>
+                                                    </sizing>
+                                                    <flow-layout direction="vertical" id="track-list">
+                                                        <sizing>
+                                                            <horizontal method="fill">100</horizontal>
+                                                            <vertical method="content"></vertical>
+                                                        </sizing>
+                                                        <children>
+                                                            <label>
+                                                                <text>Loading tracks...</text>
+                                                            </label>
+                                                        </children>
+                                                    </flow-layout>
+                                                </scroll>
+                                            </children>
+                                        </flow-layout>
+                                    </children>
+                                </flow-layout>
                                 
                                 <!-- Bottom: Playback Controls -->
                                 <flow-layout direction="horizontal">
@@ -114,6 +204,8 @@
                                     </sizing>
                                     <vertical-alignment>center</vertical-alignment>
                                     <padding><all>5</all></padding>
+                                    <margins><top>10</top></margins>
+                                    <surface><panel dark="true"/></surface>
                                     
                                     <children>
                                         <!-- Left: Track Name -->
