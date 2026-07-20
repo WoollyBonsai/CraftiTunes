@@ -158,7 +158,7 @@ public class CraftiTunesScreen extends BaseUIModelScreen<FlowLayout> {
                         });
                         
                         LabelComponent nameLbl = Components.label(Component.literal(formatTrackName(file.getName())));
-                        nameLbl.sizing(Sizing.fill(60), Sizing.content());
+                        nameLbl.sizing(Sizing.fill(45), Sizing.content());
                         row.child(nameLbl);
                         
                         LabelComponent artistLbl = Components.label(Component.literal("Unknown Artist"));

@@ -114,7 +114,7 @@
                                 <flow-layout direction="horizontal">
                                     <sizing>
                                         <horizontal method="fill">100</horizontal>
-                                        <vertical method="fill">85</vertical>
+                                        <vertical method="fill">65</vertical>
                                     </sizing>
                                     
                                     <children>
@@ -150,7 +150,6 @@
                                                 <horizontal method="fill">30</horizontal>
                                                 <vertical method="fill">100</vertical>
                                             </sizing>
-                                            <margins><right>10</right></margins>
                                         </scroll>
                                         
                                         <!-- Right Side: Track List -->
@@ -167,9 +166,9 @@
                                                 <flow-layout direction="horizontal">
                                                     <sizing><horizontal method="fill">100</horizontal><vertical method="fixed">20</vertical></sizing>
                                                     <children>
-                                                        <label><text>Track Name</text><sizing><horizontal method="fill">60</horizontal></sizing></label>
+                                                        <label><text>Track Name</text><sizing><horizontal method="fill">45</horizontal></sizing></label>
                                                         <label><text>Artist</text><sizing><horizontal method="fill">20</horizontal></sizing></label>
-                                                        <label><text>Duration</text><sizing><horizontal method="fill">20</horizontal></sizing></label>
+                                                        <label><text>Duration</text><sizing><horizontal method="fill">10</horizontal></sizing></label>
                                                     </children>
                                                 </flow-layout>
                                                 
